@@ -1,0 +1,31 @@
+{
+  "name": "timecraftjs",
+  "version": "1.0.0",
+  "description": "Javascript time features based on SPICE",
+  "main": "timecraft.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "node postinstall.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/NASA-AMMOS/timecraftjs.git"
+  },
+  "keywords": [
+    "time",
+    "conversion",
+    "ltst",
+    "lst",
+    "spice",
+    "timecraft",
+    "timecraftjs",
+    "cspice"
+  ],
+  "author": "John Thomason",
+  "contributors": [
+    "Hector R. Acosta <hector.r.acosta@jpl.nasa.gov>",
+    "Mitchell Schrock<mitchell.schrock@jpl.nasa.gov>",
+    "Arin Tahmasian <arin.tahmasian@jpl.nasa.gov",
+  ],
+  "license": "Apache 2.0"
+}

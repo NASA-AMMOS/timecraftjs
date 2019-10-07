@@ -1,0 +1,3 @@
+kernels/lsk/naif0012.tls
+kernels/pck/pck00010.tpc
+kernels/spk/de425s.bsp

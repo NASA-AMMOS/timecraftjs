@@ -1,0 +1,18 @@
+<doctype !html>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<script type="text/javascript" src="./spice.js"></script>
+		<script type="text/javascript" src="./timecraft.js"></script>
+		<script type="text/javascript" src="./cspice.js"></script>
+	</head>
+	<body>
+		<script>
+		window.addEventListener('timecraftready',function(){
+			console.log(timecraft.bodc2n(499));
+			console.log(timecraft.et2utc(43523178.23,"ISOC",4));
+		});
+		</script>
+	</body>
+</html>
