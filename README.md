@@ -1,6 +1,4 @@
 
-![Build Status](https://cae-jenkins2.jpl.nasa.gov/buildStatus/icon?job=MPSA/SEQ/timecraftjs/timecraftjs%20build/master)
-
 ![TimeCraftJS Logo](./images/timecraftLogo.png)
 
 Copyright 2019, by the California Institute of Technology.
@@ -58,7 +56,7 @@ npm install browser-sync gulp --save-dev
 gulp serve
 
 ```
-    
+
 This will run the test html file on your browser. Check your browser console for the results!  
 
 
