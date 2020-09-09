@@ -6,8 +6,8 @@ timecraftjs = {"is_ready":false};
 //set up spice different ways depending on if in a browser or not
 if(typeof window == "undefined"){
 	//If in node
-    timecraft = require("timecraftjs/spice.js");
-	var cspice = require("timecraftjs/cspice.js");
+    timecraft = require("./src/spice.js");
+	var cspice = require("./src/cspice.js");
 	var fs = require("fs");
     timecraft.SPICE.setup(cspice,fs);
 	for(var i = 0;i < kernel_paths.length;i++){
