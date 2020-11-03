@@ -1,3 +1,3 @@
-import * as TEST from '../spice.js';
+import * as TEST from '../src/spice.js';
 
 window.TEST = TEST;
