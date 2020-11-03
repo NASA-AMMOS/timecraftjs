@@ -1884,8 +1884,8 @@ var SPICE = (function() {
 	* @param {bool} node - true if running in nodejs, false if a browser
 	*/
 	s.setup = function(cspice,filesystem){//,node){
-		this.Module = cspice;
-		this.FS = filesystem;
+		// this.Module = cspice;
+		// this.FS = filesystem;
 	}		
 	
 	/** @memberof SPICE
@@ -1935,10 +1935,10 @@ var SPICE = (function() {
 		return str.slice(0, -1).trim(); //Take off the ~100 trailing whitespace chars
 	}
 	
+	s.Module = require('./cspice.js');
+	s.FS = s.Module.get_fs(); //require('fs');
+
 	return s;
 })();
 
-//if we are in node (and only if) export
-if(typeof window == 'undefined'){
-	exports.SPICE = SPICE;
-}
+module.exports = SPICE;
