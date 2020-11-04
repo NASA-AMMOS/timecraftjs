@@ -1,7 +1,10 @@
 import Module from './cspice.js';
 
-const integer_size = 4;
-const integer_type = 'i32';
+const INT_SIZE = 4;
+const INT_TYPE = 'i32';
+
+const DOUBLE_SIZE = 8;
+const DOUBLE_TYPE = 'double';
 
 /**
  * @memberof SPICE
@@ -42,14 +45,14 @@ export function b1950() {
  */
 export function bodc2n(code) {
     const name_ptr = Module._malloc(100);
-    const found_ptr = Module._malloc(integer_size);
+    const found_ptr = Module._malloc(INT_SIZE);
     Module.ccall(
         'bodc2n_c',
         null,
         ['number', 'number', 'number', 'number'],
         [code, 100, name_ptr, found_ptr],
     );
-    const found = Module.getValue(found_ptr, integer_type);
+    const found = Module.getValue(found_ptr, INT_TYPE);
     const name = Module.Pointer_stringify(name_ptr);
     Module._free(name_ptr);
     Module._free(found_ptr);
@@ -122,16 +125,16 @@ integer ID code.
  * @returns {number | undefined} The SPICE ID of the body if it exists, otherwise undefined.
  */
 export function bodn2c(name) {
-    const code_ptr = Module._malloc(integer_size);
-    const found_ptr = Module._malloc(integer_size);
+    const code_ptr = Module._malloc(INT_SIZE);
+    const found_ptr = Module._malloc(INT_SIZE);
     Module.ccall(
         'bodn2c_c',
         null,
         ['string', 'number', 'number'],
         [name, code_ptr, found_ptr],
     );
-    const found = Module.getValue(found_ptr, integer_type);
-    const code = Module.getValue(code_ptr, integer_type);
+    const found = Module.getValue(found_ptr, INT_TYPE);
+    const code = Module.getValue(code_ptr, INT_TYPE);
     Module._free(found_ptr);
     Module._free(code_ptr);
     if (found) {	// If code exists
@@ -151,16 +154,16 @@ code.
  * @returns {number | undefined} If a body name was passed in, the SPICE ID of the body if it exists, otherwise undefined. If a string number was passed in, the number as an integer.
  */
 export function bods2c(name) {
-    const code_ptr = Module._malloc(integer_size);
-    const found_ptr = Module._malloc(integer_size);
+    const code_ptr = Module._malloc(INT_SIZE);
+    const found_ptr = Module._malloc(INT_SIZE);
     Module.ccall(
         'bods2c_c',
         null,
         ['string', 'number', 'number'],
         [name, code_ptr, found_ptr],
     );
-    const found = Module.getValue(found_ptr, integer_type);
-    const code = Module.getValue(code_ptr, integer_type);
+    const found = Module.getValue(found_ptr, INT_TYPE);
+    const code = Module.getValue(code_ptr, INT_TYPE);
     Module._free(code_ptr);
     Module._free(found_ptr);
 
@@ -190,7 +193,7 @@ export function bodvcd(bodyid, item, maxn) {
         [bodyid, item, maxn, dim_ptr, values_ptr],
     );
     const ret = [];
-    for (let i = 0; i < Module.getValue(dim_ptr, integer_type); i++) {
+    for (let i = 0; i < Module.getValue(dim_ptr, INT_TYPE); i++) {
         ret.push(Module.getValue(values_ptr + i * 8, 'double'));
     }
     Module._free(dim_ptr);
@@ -216,7 +219,7 @@ export function bodvrd(body, item, maxn) {
         [body, item, maxn, dimptr, valuesptr],
     );
     const ret = [];
-    for (let i = 0; i < Module.getValue(dimptr, integer_type); i++) {
+    for (let i = 0; i < Module.getValue(dimptr, INT_TYPE); i++) {
         ret.push(Module.getValue(valuesptr + i * 8, 'double'));
     }
     Module._free(valuesptr);
@@ -433,9 +436,9 @@ is measured positive east for these bodies.
  * @returns {object} An object with the following valued: hr - the number of hours (24 hours lock), mn - the number of minutes, sc - the number of seconds, time - the local true solar time string in a 24 hour clock, and ampm - then local true solar time string in a 12 hour clock.
 */
 export function et2lst(et, body, lon, type) {
-    const hr_ptr = Module._malloc(integer_size);
-    const mn_ptr = Module._malloc(integer_size);
-    const sc_ptr = Module._malloc(integer_size);
+    const hr_ptr = Module._malloc(INT_SIZE);
+    const mn_ptr = Module._malloc(INT_SIZE);
+    const sc_ptr = Module._malloc(INT_SIZE);
     const time_ptr = Module._malloc(100);
     const ampm_ptr = Module._malloc(100);
     Module.ccall(
@@ -446,9 +449,9 @@ export function et2lst(et, body, lon, type) {
     );
     const ampm = Module.Pointer_stringify(ampm_ptr);
     const time = Module.Pointer_stringify(time_ptr);
-    const sc = Module.getValue(sc_ptr, integer_type);
-    const mn = Module.getValue(mn_ptr, integer_type);
-    const hr = Module.getValue(hr_ptr, integer_type);
+    const sc = Module.getValue(sc_ptr, INT_TYPE);
+    const mn = Module.getValue(mn_ptr, INT_TYPE);
+    const hr = Module.getValue(hr_ptr, INT_TYPE);
     Module._free(hr_ptr);
     Module._free(mn_ptr);
     Module._free(sc_ptr);
@@ -939,7 +942,7 @@ clock kernel file.
  * @returns {object} An object containing two arrays: pstart and pstop. pstart contains the list of partition start times for spacecraft sc and pstop contains the partition stop times.
  */
 export function scpart(sc) {
-    const nparts_ptr = Module._malloc(integer_size);
+    const nparts_ptr = Module._malloc(INT_SIZE);
     const pstart_ptr = Module._malloc(9999 * 8);
     const pstop_ptr = Module._malloc(9999 * 8);
     Module.ccall(
@@ -950,7 +953,7 @@ export function scpart(sc) {
     );
     const pstop = [];
     const pstart = [];
-    for (let i = 0; i < Module.getValue(nparts_ptr, integer_type); i++) {
+    for (let i = 0; i < Module.getValue(nparts_ptr, INT_TYPE); i++) {
         pstop.push(Module.getValue(pstop_ptr + i * 8, 'double'));
         pstart.push(Module.getValue(pstart_ptr + i * 8, 'double'));
     }
@@ -1160,7 +1163,7 @@ suitable for use by the routine timout_c.
  */
 export function tpictr(sample) {
     const picture_ptr = Module._malloc(100);
-    const ok_ptr = Module._malloc(integer_size);
+    const ok_ptr = Module._malloc(INT_SIZE);
     const errmsg_ptr = Module._malloc(2000);
     Module.ccall(
         'tpictr_c',
@@ -1169,7 +1172,7 @@ export function tpictr(sample) {
         [sample, 100, 2000, picture_ptr, ok_ptr, errmsg_ptr],
     );
     const ret = Module.Pointer_stringify(picture_ptr);
-    const ok = Module.getValue(ok_ptr, integer_type);
+    const ok = Module.getValue(ok_ptr, INT_TYPE);
     const errmsg = Module.Pointer_stringify(errmsg_ptr);
     Module._free(picture_ptr);
     Module._free(ok_ptr);
