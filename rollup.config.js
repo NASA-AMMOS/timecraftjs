@@ -7,5 +7,4 @@ export default {
         dir: 'example/bundle',
         format: 'iife'
     },
-    plugins: [commonjs(), builtins()]
 };
