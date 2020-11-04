@@ -1258,3 +1258,33 @@ export function utc2et(utcstr) {
     Module._free(et_ptr);
     return ret;
 }
+
+// TODO: validate this
+export function spkpos(targ, et, ref, abcorr, obs) {
+
+	// create output pointers
+	const ptarg_ptr = Module._malloc(DOUBLE_SIZE * 3);
+	const lt_ptr = Module._malloc(DOUBLE_SIZE);
+
+    Module.ccall(
+		'spkpos_c',
+		null,
+		/* ConstSpiceChar targ, SpiceDouble et, ConstSpiceChar ref, ConstSpiceChar abcorr, ConstSpiceChar obs, SpiceDouble ptarg, SpiceDouble lt */
+		[ 'string', 'number', 'string', 'string', 'string', 'number', 'number' ],
+		[ targ, et, ref, abcorr, obs, ptarg_ptr, lt_ptr ],
+	);
+
+	// read and free output pointers
+	const ptarg = [
+        Module.getValue( ptarg_ptr + DOUBLE_SIZE * 0, 'double' ),
+        Module.getValue( ptarg_ptr + DOUBLE_SIZE * 1, 'double' ),
+        Module.getValue( ptarg_ptr + DOUBLE_SIZE * 2, 'double' ),
+    ];
+	Module._free( ptarg_ptr );
+
+	const lt = Module.getValue( lt_ptr, 'double' );
+	Module._free( lt_ptr );
+
+	return { ptarg, lt };
+
+}
