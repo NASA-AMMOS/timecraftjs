@@ -7,6 +7,7 @@ import {
     loadKernelFromBuffer,
     unloadKernel,
     chronos,
+    parseMetakernel,
 } from './timecraft.js';
 
 export {
@@ -18,4 +19,5 @@ export {
     loadKernelFromBuffer,
     unloadKernel,
     chronos,
+    parseMetakernel,
 };
