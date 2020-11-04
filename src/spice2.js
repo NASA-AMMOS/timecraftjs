@@ -41,16 +41,16 @@ export function b1950() {
  * @returns {string | undefined} The name of the body if it exists, otherwise undefined.
  */
 export function bodc2n(code) {
-    var name_ptr = Module._malloc(100);
-    var found_ptr = Module._malloc(integer_size);
+    const name_ptr = Module._malloc(100);
+    const found_ptr = Module._malloc(integer_size);
     Module.ccall(
         'bodc2n_c',
         null,
         ['number', 'number', 'number', 'number'],
         [code, 100, name_ptr, found_ptr],
     );
-    var found = Module.getValue(found_ptr, integer_type);
-    var name = Module.Pointer_stringify(name_ptr);
+    const found = Module.getValue(found_ptr, integer_type);
+    const name = Module.Pointer_stringify(name_ptr);
     Module._free(name_ptr);
     Module._free(found_ptr);
     if (found) { // If name exists
@@ -70,14 +70,14 @@ body ID value.
  * @returns {string} The name of the body if it exists, otherwise the number as a string.
 */
 export function bodc2s(code) {
-    var name_ptr = Module._malloc(100);
+    const name_ptr = Module._malloc(100);
     Module.ccall(
         'bodc2s_c',
         null,
         ['number', 'number', 'number'],
         [code, 100, name_ptr],
     );
-    var ret = Module.Pointer_stringify(name_ptr);
+    const ret = Module.Pointer_stringify(name_ptr);
     Module._free(name_ptr);
     return ret; // Return name
 }
@@ -122,16 +122,16 @@ integer ID code.
  * @returns {number | undefined} The SPICE ID of the body if it exists, otherwise undefined.
  */
 export function bodn2c(name) {
-    var code_ptr = Module._malloc(integer_size);
-    var found_ptr = Module._malloc(integer_size);
+    const code_ptr = Module._malloc(integer_size);
+    const found_ptr = Module._malloc(integer_size);
     Module.ccall(
         'bodn2c_c',
         null,
         ['string', 'number', 'number'],
         [name, code_ptr, found_ptr],
     );
-    var found = Module.getValue(found_ptr, integer_type);
-    var code = Module.getValue(code_ptr, integer_type);
+    const found = Module.getValue(found_ptr, integer_type);
+    const code = Module.getValue(code_ptr, integer_type);
     Module._free(found_ptr);
     Module._free(code_ptr);
     if (found) {	// If code exists
@@ -151,16 +151,16 @@ code.
  * @returns {number | undefined} If a body name was passed in, the SPICE ID of the body if it exists, otherwise undefined. If a string number was passed in, the number as an integer.
  */
 export function bods2c(name) {
-    var code_ptr = Module._malloc(integer_size);
-    var found_ptr = Module._malloc(integer_size);
+    const code_ptr = Module._malloc(integer_size);
+    const found_ptr = Module._malloc(integer_size);
     Module.ccall(
         'bods2c_c',
         null,
         ['string', 'number', 'number'],
         [name, code_ptr, found_ptr],
     );
-    var found = Module.getValue(found_ptr, integer_type);
-    var code = Module.getValue(code_ptr, integer_type);
+    const found = Module.getValue(found_ptr, integer_type);
+    const code = Module.getValue(code_ptr, integer_type);
     Module._free(code_ptr);
     Module._free(found_ptr);
 
@@ -181,16 +181,16 @@ code.
  * @todo Document and test this!
  */
 export function bodvcd(bodyid, item, maxn) {
-    var dim_ptr = Module._malloc(8);
-    var values_ptr = Module._malloc(8 * maxn);
+    const dim_ptr = Module._malloc(8);
+    const values_ptr = Module._malloc(8 * maxn);
     Module.ccall(
         'bodvcd_c',
         null,
         ['number', 'string', 'number', 'number', 'number'],
         [bodyid, item, maxn, dim_ptr, values_ptr],
     );
-    var ret = [];
-    for (var i = 0; i < Module.getValue(dim_ptr, integer_type); i++) {
+    const ret = [];
+    for (let i = 0; i < Module.getValue(dim_ptr, integer_type); i++) {
         ret.push(Module.getValue(values_ptr + i * 8, 'double'));
     }
     Module._free(dim_ptr);
@@ -207,16 +207,16 @@ of an item associated with a body.
  * @todo Document and test this!
  */
 export function bodvrd(body, item, maxn) {
-    var valuesptr = Module._malloc(8 * maxn);
-    var dimptr = Module._malloc(2);
+    const valuesptr = Module._malloc(8 * maxn);
+    const dimptr = Module._malloc(2);
     Module.ccall(
         'bodvrd_c',
         null,
         ['string', 'string', 'number', 'number', 'number'],
         [body, item, maxn, dimptr, valuesptr],
     );
-    var ret = [];
-    for (var i = 0; i < Module.getValue(dimptr, integer_type); i++) {
+    const ret = [];
+    for (let i = 0; i < Module.getValue(dimptr, integer_type); i++) {
         ret.push(Module.getValue(valuesptr + i * 8, 'double'));
     }
     Module._free(valuesptr);
@@ -340,14 +340,14 @@ spacecraft clock time.
  * @returns {number} The value of x measure in the new units.
 */
 export function convrt(x, in_var, out) {
-    var y_ptr = Module._malloc(8);
+    const y_ptr = Module._malloc(8);
     Module.ccall(
         'convrt_c',
         null,
         ['number', 'string', 'string', 'number'],
         [x, in_var, out, y_ptr],
     );
-    var ret = Module.getValue(y_ptr, 'double');
+    const ret = Module.getValue(y_ptr, 'double');
     Module._free(y_ptr);
     return ret;
 }
@@ -360,14 +360,14 @@ export function convrt(x, in_var, out) {
  * @returns {number} Delta ET (ET-UTC) at input epoch
  */
 export function deltet(epoch, eptype) {
-    var delta_ptr = Module._malloc(8);
+    const delta_ptr = Module._malloc(8);
     Module.ccall(
         'deltet_c',
         null,
         ['number', 'string', 'number'],
         [epoch, eptype, delta_ptr],
     );
-    var ret = Module.getValue(delta_ptr, 'double');
+    const ret = Module.getValue(delta_ptr, 'double');
     Module._free(delta_ptr);
     return ret;
 }
@@ -433,22 +433,22 @@ is measured positive east for these bodies.
  * @returns {object} An object with the following valued: hr - the number of hours (24 hours lock), mn - the number of minutes, sc - the number of seconds, time - the local true solar time string in a 24 hour clock, and ampm - then local true solar time string in a 12 hour clock.
 */
 export function et2lst(et, body, lon, type) {
-    var hr_ptr = Module._malloc(integer_size);
-    var mn_ptr = Module._malloc(integer_size);
-    var sc_ptr = Module._malloc(integer_size);
-    var time_ptr = Module._malloc(100);
-    var ampm_ptr = Module._malloc(100);
+    const hr_ptr = Module._malloc(integer_size);
+    const mn_ptr = Module._malloc(integer_size);
+    const sc_ptr = Module._malloc(integer_size);
+    const time_ptr = Module._malloc(100);
+    const ampm_ptr = Module._malloc(100);
     Module.ccall(
         'et2lst_c',
         null,
         ['number', 'number', 'number', 'string', 'number', 'number', 'number', 'number', 'number', 'number', 'number'],
         [et, body, lon, type, 100, 100, hr_ptr, mn_ptr, sc_ptr, time_ptr, ampm_ptr],
     );
-    var ampm = Module.Pointer_stringify(ampm_ptr);
-    var time = Module.Pointer_stringify(time_ptr);
-    var sc = Module.getValue(sc_ptr, integer_type);
-    var mn = Module.getValue(mn_ptr, integer_type);
-    var hr = Module.getValue(hr_ptr, integer_type);
+    const ampm = Module.Pointer_stringify(ampm_ptr);
+    const time = Module.Pointer_stringify(time_ptr);
+    const sc = Module.getValue(sc_ptr, integer_type);
+    const mn = Module.getValue(mn_ptr, integer_type);
+    const hr = Module.getValue(hr_ptr, integer_type);
     Module._free(hr_ptr);
     Module._free(mn_ptr);
     Module._free(sc_ptr);
@@ -477,14 +477,14 @@ export function et2lst(et, body, lon, type) {
  * @returns {string} The corresponding time in UTC.
  */
 export function et2utc(et, format, prec) {
-    var utcstr_ptr = Module._malloc(100);
+    const utcstr_ptr = Module._malloc(100);
     Module.ccall(
         'et2utc_c',
         null,
         ['number', 'string', 'number', 'number', 'number'],
         [et, format, prec, 100, utcstr_ptr],
     );
-    var ret = Module.Pointer_stringify(utcstr_ptr);
+    const ret = Module.Pointer_stringify(utcstr_ptr);
     Module._free(utcstr_ptr);
     return ret;
 }
@@ -500,14 +500,14 @@ formal calendar free of leapseconds.
  * @ returns {string} The corresponding time in calendar format (Year Month Day Time)
  */
 export function etcal(et) {
-    var string_ptr = Module._malloc(100);
+    const string_ptr = Module._malloc(100);
     Module.ccall(
         'etcal_c',
         null,
         ['number', 'number', 'number'],
         [et, 100, string_ptr],
     );
-    var ret = Module.Pointer_stringify(string_ptr);
+    const ret = Module.Pointer_stringify(string_ptr);
     Module._free(string_ptr);
     return ret;
 }
@@ -557,14 +557,14 @@ the explanation of the short error message, or the
 long error message.
 */
 export function getmsg(option) {
-    var msg_ptr = Module._malloc(1841);
+    const msg_ptr = Module._malloc(1841);
     Module.ccall(
         'getmsg_c',
         null,
         ['string', 'number', 'number'],
         [option, 1841, msg_ptr],
     );
-    var ret = Module.Pointer_stringify(msg_ptr);
+    const ret = Module.Pointer_stringify(msg_ptr);
     Module._free(msg_ptr);
     return ret;
 }
@@ -675,16 +675,16 @@ time between transmit and receive is also returned.
  * @todo Document and test this!
  */
 export function ltime(etobs, obs, dir, targ) {
-    var ettarg_ptr = Module._malloc(8);
-    var elapsd_ptr = Module._malloc(8);
+    const ettarg_ptr = Module._malloc(8);
+    const elapsd_ptr = Module._malloc(8);
     Module.ccall(
         'ltime_c',
         null,
         ['number', 'number', 'string', 'number', 'number', 'number'],
         [etobs, obs, dir, targ, ettarg_ptr, elapsd_ptr],
     );
-    var elapsd = Module.getValue(elapsd_ptr, 'double');
-    var ettarg = Module.getValue(ettarg_ptr, 'double');
+    const elapsd = Module.getValue(elapsd_ptr, 'double');
+    const ettarg = Module.getValue(ettarg_ptr, 'double');
     Module._free(elapsd_ptr);
     Module._free(ettarg_ptr);
     return {'ettarg': ettarg, 'elapsd': elapsd};
@@ -793,14 +793,14 @@ a character representation.
  * @returns {string} The character encoding of time sclkdp for spacecraft sc.
  */
 export function scdecd(sc, sclkdp) {
-    var sclkch_ptr = Module._malloc(100);
+    const sclkch_ptr = Module._malloc(100);
     Module.ccall(
         'scdecd_c',
         null,
         ['number', 'number', 'number', 'number'],
         [sc, sclkdp, 100, sclkch_ptr],
     );
-    var ret = Module.Pointer_stringify(sclkch_ptr);
+    const ret = Module.Pointer_stringify(sclkch_ptr);
     Module._free(sclkch_ptr);
     return ret;
 }
@@ -818,14 +818,14 @@ returned.
  * @returns {number} The corresponding SCLK time for spacecraft sc in clock ticks.
  */
 export function sce2c(sc, et) {
-    var sclkdp_ptr = Module._malloc(8);
+    const sclkdp_ptr = Module._malloc(8);
     Module.ccall(
         'sce2c_c',
         null,
         ['number', 'number', 'number'],
         [sc, et, sclkdp_ptr],
     );
-    var ret = Module.getValue(sclkdp_ptr, 'double');
+    const ret = Module.getValue(sclkdp_ptr, 'double');
     Module._free(sclkdp_ptr);
     return ret;
 }
@@ -842,14 +842,14 @@ character string representation of a spacecraft clock value (SCLK).
  * @returns {string} The corresponding SCLK time for spacecraft sc in SLCK string encoding.
  */
 export function sce2s(sc, et) {
-    var sclkch_ptr = Module._malloc(100);
+    const sclkch_ptr = Module._malloc(100);
     Module.ccall(
         'sce2s_c',
         null,
         ['number', 'number', 'number', 'number'],
         [sc, et, 100, sclkch_ptr],
     );
-    var ret = Module.Pointer_stringify(sclkch_ptr);
+    const ret = Module.Pointer_stringify(sclkch_ptr);
     Module._free(sclkch_ptr);
     return ret;
 }
@@ -868,14 +868,14 @@ the routine sce2c_c.
  * @returns {number} The corresponding SCLK time for spacecraft sc in clock ticks to the closest integer.
  */
 export function sce2t(sc, et) {
-    var sclkdp_ptr = Module._malloc(8);
+    const sclkdp_ptr = Module._malloc(8);
     Module.ccall(
         'sce2t_c',
         null,
         ['number', 'number', 'number'],
         [sc, et, sclkdp_ptr],
     );
-    var ret = Module.getValue(sclkdp_ptr, 'double');
+    const ret = Module.getValue(sclkdp_ptr, 'double');
     Module._free(sclkdp_ptr);
     return ret;
 }
@@ -892,14 +892,14 @@ double precision number.
  * @returns {number} Sclkch in spacecraft ticks.
  */
 export function scencd(sc, sclkch) {
-    var sclkdp_ptr = Module._malloc(8);
+    const sclkdp_ptr = Module._malloc(8);
     Module.ccall(
         'scencd_c',
         null,
         ['number', 'string', 'number'],
         [sc, sclkch, sclkdp_ptr],
     );
-    var ret = Module.getValue(sclkdp_ptr, 'double');
+    const ret = Module.getValue(sclkdp_ptr, 'double');
     Module._free(sclkdp_ptr);
     return ret;
 }
@@ -916,14 +916,14 @@ Convert encoded spacecraft clock ticks to character clock format.
  * time to a character string which includes a partition number. scfmt, which is called by scdecd, does not make use of partition information.
  */
 export function scfmt(sc, ticks) {
-    var clkstr_ptr = Module._malloc(100);
+    const clkstr_ptr = Module._malloc(100);
     Module.ccall(
         'scfmt_c',
         null,
         ['number', 'number', 'number', 'number'],
         [sc, ticks, 100, clkstr_ptr],
     );
-    var ret = Module.Pointer_stringify(clkstr_ptr);
+    const ret = Module.Pointer_stringify(clkstr_ptr);
     Module._free(clkstr_ptr);
     return ret;
 }
@@ -939,18 +939,18 @@ clock kernel file.
  * @returns {object} An object containing two arrays: pstart and pstop. pstart contains the list of partition start times for spacecraft sc and pstop contains the partition stop times.
  */
 export function scpart(sc) {
-    var nparts_ptr = Module._malloc(integer_size);
-    var pstart_ptr = Module._malloc(9999 * 8);
-    var pstop_ptr = Module._malloc(9999 * 8);
+    const nparts_ptr = Module._malloc(integer_size);
+    const pstart_ptr = Module._malloc(9999 * 8);
+    const pstop_ptr = Module._malloc(9999 * 8);
     Module.ccall(
         'scpart_c',
         null,
         ['number', 'number', 'number', 'number'],
         [sc, nparts_ptr, pstart_ptr, pstop_ptr],
     );
-    var pstop = [];
-    var pstart = [];
-    for (var i = 0; i < Module.getValue(nparts_ptr, integer_type); i++) {
+    const pstop = [];
+    const pstart = [];
+    for (let i = 0; i < Module.getValue(nparts_ptr, integer_type); i++) {
         pstop.push(Module.getValue(pstop_ptr + i * 8, 'double'));
         pstart.push(Module.getValue(pstart_ptr + i * 8, 'double'));
     }
@@ -973,14 +973,14 @@ J2000 (ET).
  * @returns {number} The corresponding time in ET seconds past J2000
  */
 export function scs2e(sc, sclkch) {
-    var et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(8);
     Module.ccall(
         'scs2e_c',
         null,
         ['number', 'string', 'number'],
         [sc, sclkch, et_ptr],
     );
-    var ret = Module.getValue(et_ptr, 'double');
+    const ret = Module.getValue(et_ptr, 'double');
     Module._free(et_ptr);
     return ret;
 }
@@ -997,14 +997,14 @@ seconds past J2000 (ET).
  * @returns {number} The corresponding time in ET seconds past J2000
  */
 export function sct2e(sc, sclkdp) {
-    var et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(8);
     Module.ccall(
         'sct2e_c',
         null,
         ['number', 'number', 'number'],
         [sc, sclkdp, et_ptr],
     );
-    var ret = Module.getValue(et_ptr, 'double');
+    const ret = Module.getValue(et_ptr, 'double');
     Module._free(et_ptr);
     return ret;
 }
@@ -1021,14 +1021,14 @@ Convert a spacecraft clock format string to number of "ticks".
  * since the beginning of the mission, and so uses partition information. sctiks_c just converts to absolute ticks.
  */
 export function sctiks(sc, clkstr) {
-    var ticks_ptr = Module._malloc(8);
+    const ticks_ptr = Module._malloc(8);
     Module.ccall(
         'sctiks_c',
         null,
         ['number', 'string', 'number'],
         [sc, clkstr, ticks_ptr],
     );
-    var ret = Module.getValue(ticks_ptr, 'double');
+    const ret = Module.getValue(ticks_ptr, 'double');
     Module._free(ticks_ptr);
     return ret;
 }
@@ -1060,14 +1060,14 @@ epoch corresponding to the input epoch.
  * @returns {number} The corresponding time in ET seconds past J2000.
  */
 export function str2et(str) {
-    var et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(8);
     Module.ccall(
         'str2et_c',
         null,
         ['string', 'number'],
         [str, et_ptr],
     );
-    var ret = Module.getValue(et_ptr, 'double');
+    const ret = Module.getValue(et_ptr, 'double');
     Module._free(et_ptr);
     return ret;
 }
@@ -1080,7 +1080,7 @@ input strings.
  * @todo Document and test this!
  */
 export function timdef(action, item, value) {
-    var value_ptr = Module._malloc(100);
+    const value_ptr = Module._malloc(100);
     Module.writeStringToMemory(value, value_ptr);
     Module.ccall(
         'timdef_c',
@@ -1089,7 +1089,7 @@ export function timdef(action, item, value) {
         [action, item, 100, value_ptr],
     );
 
-    var ret = Module.Pointer_stringify(value_ptr);
+    const ret = Module.Pointer_stringify(value_ptr);
     Module._free(value_ptr);
     return ret;
 }
@@ -1107,14 +1107,14 @@ the specifications of a user's format picture.
  * @returns {string} The time formatted to fit to pictur.
  */
 export function timout(et, pictur) {
-    var output_ptr = Module._malloc(100);
+    const output_ptr = Module._malloc(100);
     Module.ccall(
         'timout_c',
         null,
         ['number', 'string', 'number', 'number'],
         [et, pictur, 100, output_ptr],
     );
-    var ret = Module.Pointer_stringify(output_ptr);
+    const ret = Module.Pointer_stringify(output_ptr);
     Module._free(output_ptr);
     return ret;
 }
@@ -1127,20 +1127,20 @@ on a formal calendar.
  * @todo Document and test this!
  */
 export function tparse(string) {
-    var sp2000_ptr = Module._malloc(8);
-    var errmsg_ptr = Module._malloc(2000);
+    const sp2000_ptr = Module._malloc(8);
+    const errmsg_ptr = Module._malloc(2000);
     Module.ccall(
         'tparse_c',
         null,
         ['string', 'number', 'number', 'number'],
         [string, 2000, sp2000_ptr, errmsg_ptr],
     );
-    var errmsg = Module.Pointer_stringify(errmsg_ptr);
-    var sp2000 = Module.getValue(sp2000_ptr, 'double');
+    const errmsg = Module.Pointer_stringify(errmsg_ptr);
+    const sp2000 = Module.getValue(sp2000_ptr, 'double');
     Module._free(errmsg_ptr);
     Module._free(sp2000_ptr);
 
-    if (errmsg == '') {
+    if (errmsg === '') {
         return sp2000; // If string correctly parses return the value, otherwise return undefined and output the error message
     } else {
         console.error(errmsg);
@@ -1159,18 +1159,18 @@ suitable for use by the routine timout_c.
  * @returns {string} A correctly formatted picture to be passed into timout for time conversion.
  */
 export function tpictr(sample) {
-    var picture_ptr = Module._malloc(100);
-    var ok_ptr = Module._malloc(integer_size);
-    var errmsg_ptr = Module._malloc(2000);
+    const picture_ptr = Module._malloc(100);
+    const ok_ptr = Module._malloc(integer_size);
+    const errmsg_ptr = Module._malloc(2000);
     Module.ccall(
         'tpictr_c',
         null,
         ['string', 'number', 'number', 'number', 'number', 'number'],
         [sample, 100, 2000, picture_ptr, ok_ptr, errmsg_ptr],
     );
-    var ret = Module.Pointer_stringify(picture_ptr);
-    var ok = Module.getValue(ok_ptr, integer_type);
-    var errmsg = Module.Pointer_stringify(errmsg_ptr);
+    const ret = Module.Pointer_stringify(picture_ptr);
+    const ok = Module.getValue(ok_ptr, integer_type);
+    const errmsg = Module.Pointer_stringify(errmsg_ptr);
     Module._free(picture_ptr);
     Module._free(ok_ptr);
     Module._free(errmsg_ptr);
@@ -1244,14 +1244,14 @@ to ephemeris seconds past J2000.
  * @returns {number} The corresponding time in ET seconds past J2000.
  */
 export function utc2et(utcstr) {
-    var et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(8);
     Module.ccall(
         'utc2et_c',
         null,
         ['string', 'number'],
         [utcstr, et_ptr],
     );
-    var ret = Module.getValue(et_ptr, 'double');
+    const ret = Module.getValue(et_ptr, 'double');
     Module._free(et_ptr);
     return ret;
 }
