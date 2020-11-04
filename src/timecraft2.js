@@ -9,14 +9,14 @@ function mkdirRecursive(parts) {
     const tempParts = parts.slice();
 
     let currPath = '';
-    while(tempParts.length) {
+    while (tempParts.length) {
         if (currPath !== '') {
             currPath += '/';
         }
         currPath += tempParts.shift();
         try {
             FS.mkdir(currPath);
-        } catch {
+        } catch (e) {
             // do nothing
         }
     }
@@ -46,7 +46,7 @@ export function loadKernel(path) {
 }
 
 export function loadKernelFromBuffer(buffer) {
-    const path = `__buffer_files__/buffer_${bufferFileCount}.bin`;
+    const path = `__buffer_files__/buffer_${ bufferFileCount }.bin`;
     bufferFileCount++;
 
     prepareFileFromBuffer(path, buffer);
@@ -71,7 +71,7 @@ export function chronos(inptim, cmdlin) {
         'cronos_',
         'number',
         ['string', 'number', 'string', 'number', 'number', 'number', 'number'],
-        [cmdlin, intptr, inptim, outtim_ptr, cmdlin.length, inptim.length, 256]
+        [cmdlin, intptr, inptim, outtim_ptr, cmdlin.length, inptim.length, 256],
     );
 
     const ret = Module.Pointer_stringify(outtim_ptr);
