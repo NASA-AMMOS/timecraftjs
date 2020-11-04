@@ -18,4 +18,4 @@ export {
     loadKernelFromBuffer,
     unloadKernel,
     chronos,
-}
+};
