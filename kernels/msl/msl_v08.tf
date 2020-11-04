@@ -1,5 +1,45 @@
 KPL/FK
 
+\beginlabel
+PDS_VERSION_ID               = PDS3
+RECORD_TYPE                  = STREAM
+RECORD_BYTES                 = "N/A"
+^SPICE_KERNEL                = "msl_v08.tf"
+MISSION_NAME                 = "MARS SCIENCE LABORATORY"
+SPACECRAFT_NAME              = "MARS SCIENCE LABORATORY"
+DATA_SET_ID                  = "MSL-M-SPICE-6-V1.0"
+KERNEL_TYPE_ID               = FK
+PRODUCT_ID                   = "msl_v08.tf"
+PRODUCT_CREATION_TIME        = 2013-06-10T12:35:08
+PRODUCER_ID                  = "NAIF/JPL"
+MISSION_PHASE_NAME           = {
+                               DEVELOPMENT,
+                               LAUNCH,
+                               "CRUISE AND APPROACH",
+                               "ENTRY, DESCENT, AND LANDING",
+                               "PRIMARY SURFACE MISSION",
+                               "EXTENDED SURFACE MISSION"
+                               }
+PRODUCT_VERSION_TYPE         = ACTUAL
+PLATFORM_OR_MOUNTING_NAME    = "N/A"
+START_TIME                   = "N/A"
+STOP_TIME                    = "N/A"
+SPACECRAFT_CLOCK_START_COUNT = "N/A"
+SPACECRAFT_CLOCK_STOP_COUNT  = "N/A"
+TARGET_NAME                  = MARS
+INSTRUMENT_NAME              = "N/A"
+NAIF_INSTRUMENT_ID           = "N/A"
+SOURCE_PRODUCT_ID            = "N/A"
+NOTE                         = "See comments in the file for details"
+OBJECT                       = SPICE_KERNEL
+  INTERCHANGE_FORMAT         = ASCII
+  KERNEL_TYPE                = FRAMES
+  DESCRIPTION                = "FK file providing the complete set of frame
+definitions for the MSL rover, its structures and science instruments. "
+END_OBJECT                   = SPICE_KERNEL
+\endlabel
+
+
 MSL Frames Kernel
 ========================================================================
 
