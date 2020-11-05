@@ -903,9 +903,9 @@ export function timdef(action, item, value) {
         [action, item, 100, value_ptr],
     );
 
-    const value = Module.Pointer_stringify(value_ptr);
+    const valueOut = Module.Pointer_stringify(value_ptr);
     Module._free(value_ptr);
-    return value;
+    return valueOut;
 }
 
 /* timout:
