@@ -1,6 +1,6 @@
-import CSpice from './cspice.js';
-import * as Spice from './spice.js';
-import {
+export { default as CSpice } from './cspice.js';
+export * as Spice from './spice.js';
+export {
     prepareFileFromBuffer,
     removeFile,
     loadKernel,
@@ -9,15 +9,3 @@ import {
     chronos,
     parseMetakernel,
 } from './timecraft.js';
-
-export {
-    CSpice,
-    Spice,
-    prepareFileFromBuffer,
-    removeFile,
-    loadKernel,
-    loadKernelFromBuffer,
-    unloadKernel,
-    chronos,
-    parseMetakernel,
-};
