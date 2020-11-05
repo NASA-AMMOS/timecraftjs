@@ -9,14 +9,17 @@ window.Timecraft = Timecraft;
         '../kernels/lsk/naif0012.tls',
         '../kernels/spk/de425s.bsp',
 
-        // '../kernels/msl/msl_76_sclkscet_00016.tsc',
-        '../kernels/msl/msl_lmst_ops120808_v1.tsc',
-        '../kernels/msl/pck00008.tpc',
-        // '../kernels/msl/msl_cruise_v1.bsp',
-        // '../kernels/msl/msl_edl_v01.bsp',
-        '../kernels/msl/msl_ls_ops120808_iau2000_v1.bsp',
-        '../kernels/msl/msl_atls_ops120808_v1.bsp',
-        '../kernels/msl/msl_v08.tf',
+        // '../kernels/sclk/msl_76_sclkscet_00016.tsc',
+        '../kernels/sclk/msl_lmst_ops120808_v1.tsc',
+
+        '../kernels/pck/pck00008.tpc',
+
+        // '../kernels/spk/msl_cruise_v1.bsp',
+        // '../kernels/spk/msl_edl_v01.bsp',
+        '../kernels/spk/msl_ls_ops120808_iau2000_v1.bsp',
+        '../kernels/spk/msl_atls_ops120808_v1.bsp',
+
+        '../kernels/fk/msl_v08.tf',
     ].map( p => fetch( p ).then( res => res.arrayBuffer() ) ) );
 
     buffers.forEach( buffer => {
