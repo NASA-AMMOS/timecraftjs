@@ -56,11 +56,8 @@ export function bodc2n(code) {
     const name = Module.Pointer_stringify(name_ptr);
     Module._free(name_ptr);
     Module._free(found_ptr);
-    if (found) { // If name exists
-        return name;// Return the name
-    } else {
-        return undefined;
-    }
+
+    return { name, found };
 }
 
 /**
@@ -80,9 +77,9 @@ export function bodc2s(code) {
         ['number', 'number', 'number'],
         [code, 100, name_ptr],
     );
-    const ret = Module.Pointer_stringify(name_ptr);
+    const name = Module.Pointer_stringify(name_ptr);
     Module._free(name_ptr);
-    return ret; // Return name
+    return name;
 }
 
 /* boddef:    Define a body name/ID code pair for later translation via
@@ -137,11 +134,8 @@ export function bodn2c(name) {
     const code = Module.getValue(code_ptr, INT_TYPE);
     Module._free(found_ptr);
     Module._free(code_ptr);
-    if (found) {	// If code exists
-        return code; // Return it
-    } else {
-        return undefined;
-    }
+
+    return { code, found };
 }
 
 /* bods2c:    Translate a string containing a body name or ID code to an integer
@@ -167,12 +161,7 @@ export function bods2c(name) {
     Module._free(code_ptr);
     Module._free(found_ptr);
 
-    if (found) {	// If the code exists
-        return code;// Return it
-    } else {
-        return undefined;
-    }
-
+    return { code, found };
 }
 
 /* bodvcd:
@@ -184,8 +173,8 @@ code.
  * @todo Document and test this!
  */
 export function bodvcd(bodyid, item, maxn) {
-    const dim_ptr = Module._malloc(8);
-    const values_ptr = Module._malloc(8 * maxn);
+    const dim_ptr = Module._malloc(DOUBLE_SIZE);
+    const values_ptr = Module._malloc(DOUBLE_SIZE * maxn);
     Module.ccall(
         'bodvcd_c',
         null,
@@ -194,7 +183,7 @@ export function bodvcd(bodyid, item, maxn) {
     );
     const ret = [];
     for (let i = 0; i < Module.getValue(dim_ptr, INT_TYPE); i++) {
-        ret.push(Module.getValue(values_ptr + i * 8, 'double'));
+        ret.push(Module.getValue(values_ptr + i * DOUBLE_SIZE, DOUBLE_TYPE));
     }
     Module._free(dim_ptr);
     Module._free(values_ptr);
@@ -210,8 +199,8 @@ of an item associated with a body.
  * @todo Document and test this!
  */
 export function bodvrd(body, item, maxn) {
-    const valuesptr = Module._malloc(8 * maxn);
-    const dimptr = Module._malloc(2);
+    const valuesptr = Module._malloc(DOUBLE_SIZE * maxn);
+    const dimptr = Module._malloc(INT_SIZE);
     Module.ccall(
         'bodvrd_c',
         null,
@@ -220,80 +209,13 @@ export function bodvrd(body, item, maxn) {
     );
     const ret = [];
     for (let i = 0; i < Module.getValue(dimptr, INT_TYPE); i++) {
-        ret.push(Module.getValue(valuesptr + i * 8, 'double'));
+        ret.push(Module.getValue(valuesptr + i * DOUBLE_SIZE, DOUBLE_TYPE));
     }
     Module._free(valuesptr);
     Module._free(dimptr);
 
     return ret;
 }
-
-/* ckgp:
-Get pointing (attitude) for a specified spacecraft clock time.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function ckgp(inst,sclkdp,tol,ref){
-    var cmat_ptr = Module._malloc(72);
-    var clkout_ptr = Module._malloc(8);
-    var found_ptr = Module._malloc(integer_size);
-    Module.ccall(
-        'ckgp_c',
-        null,
-        ["number","number","number","string","number","number","number",],
-        [inst,sclkdp,tol,ref,cmat_ptr,clkout_ptr,found_ptr,]
-    );
-    var found = Module.getValue(found_ptr,integer_type);
-    var clkout = Module.getValue(clkout_ptr,'double');
-    var cmat = ptr_matrix(cmat_ptr);
-    Module._free(found_ptr);
-    Module._free(clkout_ptr);
-    Module._free(cmat_ptr);
-
-    if(found){
-        return {'cmat':cmat,'clkout':clkout};
-    } else {
-        return undefined;
-    }
-} */
-
-/* ckgpav:
-Get pointing (attitude) and angular velocity for a specified
-spacecraft clock time.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function ckgpav(inst,sclkdp,tol,ref){
-    var cmat_ptr = Module._malloc(72);
-    var av_ptr = Module._malloc(24);
-    var clkout_ptr = Module._malloc(8);
-    var found_ptr = Module._malloc(integer_size);
-    Module.ccall(
-        'ckgpav_c',
-        null,
-        ["number","number","number","string","number","number","number","number",],
-        [inst,sclkdp,tol,ref,cmat_ptr,av_ptr,clkout_ptr,found_ptr,]
-    );
-    var found = Module.getValue(found_ptr,integer_type);
-    var clkout = Module.getValue(clkout_ptr,'double');
-    var av = [];
-    for(var i = 0;i < 3;i++){
-        av.push(Module.getValue(av_ptr+i*8,'double'));
-    }
-    var cmat = ptr_matrix(cmat_ptr);
-    Module._free(found_ptr);
-    Module._free(clkout_ptr);
-    Module._free(av_ptr);
-    Module._free(cmat_ptr);
-
-    if(found){
-        return {'cmat':cmat,'av':av,'clkout':clkout};
-    } else {
-        return undefined;
-    }
-} */
 
 /* convrt:
     Take a measurement X, the units associated with
@@ -343,14 +265,14 @@ spacecraft clock time.
  * @returns {number} The value of x measure in the new units.
 */
 export function convrt(x, in_var, out) {
-    const y_ptr = Module._malloc(8);
+    const y_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'convrt_c',
         null,
         ['number', 'string', 'string', 'number'],
         [x, in_var, out, y_ptr],
     );
-    const ret = Module.getValue(y_ptr, 'double');
+    const ret = Module.getValue(y_ptr, DOUBLE_TYPE);
     Module._free(y_ptr);
     return ret;
 }
@@ -363,16 +285,16 @@ export function convrt(x, in_var, out) {
  * @returns {number} Delta ET (ET-UTC) at input epoch
  */
 export function deltet(epoch, eptype) {
-    const delta_ptr = Module._malloc(8);
+    const delta_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'deltet_c',
         null,
         ['number', 'string', 'number'],
         [epoch, eptype, delta_ptr],
     );
-    const ret = Module.getValue(delta_ptr, 'double');
+    const delta = Module.getValue(delta_ptr, DOUBLE_TYPE);
     Module._free(delta_ptr);
-    return ret;
+    return delta;
 }
 
 /* erract:    Retrieve or set the default error action.
@@ -388,27 +310,6 @@ export function erract(op, action) {
         [op, 100, action],
     );
 }
-
-/* Calculate the time derivative of the separation angle between
-two input states, S1 and S2.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function dvsep(s1,s2){
-    var s1_ptr = arrayToMemory(s1,'double');
-    var s2_ptr = arrayToMemory(s2,'double');
-    var ret = Module.ccall(
-        'dvsep_c',
-        'number',
-        ["number","number"],
-        [s1_ptr,s2_ptr]
-    );
-    Module._free(s1_ptr);
-    Module._free(s2_ptr);
-
-    return ret;
-} */
 
 /* et2lst:
 Given an ephemeris epoch, compute the local solar time for
@@ -458,7 +359,7 @@ export function et2lst(et, body, lon, type) {
     Module._free(time_ptr);
     Module._free(ampm_ptr);
 
-    return {'hr': hr, 'mn': mn, 'sc': sc, 'time': time, 'ampm': ampm};
+    return { hr, mn, sc, time, ampm };
 }
 
 /** @memberof SPICE
@@ -487,9 +388,9 @@ export function et2utc(et, format, prec) {
         ['number', 'string', 'number', 'number', 'number'],
         [et, format, prec, 100, utcstr_ptr],
     );
-    const ret = Module.Pointer_stringify(utcstr_ptr);
+    const utcstr = Module.Pointer_stringify(utcstr_ptr);
     Module._free(utcstr_ptr);
-    return ret;
+    return utcstr;
 }
 
 /* etcal:    Convert from an ephemeris epoch measured in seconds past
@@ -510,9 +411,9 @@ export function etcal(et) {
         ['number', 'number', 'number'],
         [et, 100, string_ptr],
     );
-    const ret = Module.Pointer_stringify(string_ptr);
+    const string = Module.Pointer_stringify(string_ptr);
     Module._free(string_ptr);
-    return ret;
+    return string;
 }
 
 /* failed: True if an error condition has been signaled via sigerr_c.
@@ -567,9 +468,9 @@ export function getmsg(option) {
         ['string', 'number', 'number'],
         [option, 1841, msg_ptr],
     );
-    const ret = Module.Pointer_stringify(msg_ptr);
+    const msg = Module.Pointer_stringify(msg_ptr);
     Module._free(msg_ptr);
-    return ret;
+    return msg;
 }
 
 /* j1900:    Return the Julian Date of 1899 DEC 31 12:00:00 (1900 JAN 0.5).
@@ -652,22 +553,6 @@ export function jyear() {
     );
 }
 
-/* lspcn:
-Compute L_s, the planetocentric longitude of the sun, as seen
-from a specified body.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function lspcn(body,et,abcorr){
-    return Module.ccall(
-        'lspcn_c',
-        'number',
-        ['string','number','string',],
-        [body,et,abcorr,]
-    );
-} */
-
 /* ltime:
 This routine computes the transmit (or receive) time
 of a signal at a specified target, given the receive
@@ -690,82 +575,8 @@ export function ltime(etobs, obs, dir, targ) {
     const ettarg = Module.getValue(ettarg_ptr, 'double');
     Module._free(elapsd_ptr);
     Module._free(ettarg_ptr);
-    return {'ettarg': ettarg, 'elapsd': elapsd};
+    return { ettarg, elapsd };
 }
-
-/* occult:
-    Determines the occultation condition (not occulted, partially,
-    etc.) of one target relative to another target as seen by
-    an observer at a given time.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function occult(target1,shape1,frame1,target2,shape2,frame2,abcorr,observer,et){
-    var occult_code_ptr = Module._malloc(integer_size);
-    Module.ccall(
-        'occult_c',
-        null,
-        ["string","string","string","string","string","string","string","string","number","number",],
-        [target1,shape1,frame1,target2,shape2,frame2,abcorr,observer,et,occult_code_ptr,]
-    );
-    var ret = Module.getValue(occult_code_ptr,integer_type);
-    Module._free(occult_code_ptr);
-    return ret;
-} */
-
-/* oscelt:
-Determine the set of osculating conic orbital elements that
-corresponds to the state (position, velocity) of a body at
-some epoch.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function oscelt(state,et,mu){
-    var state_ptr = arrayToMemory(state,'double');
-    var elts_ptr = Module._malloc(64);
-    Module.ccall(
-        'oscelt_c',
-        null,
-        ["number","number","number","number",],
-        [state_ptr,et,mu,elts_ptr,]
-    );
-    var elts = [];
-    for(var i = 0; i < 8;i++){
-        elts.push(Module.getValue(elts_ptr+(i*8),'double'));
-    }
-    Module._free(elts_ptr);
-    Module._free(state_ptr);
-
-    return elts;
-} */
-
-/* prop2b:    Given a central mass and the state of massless body at time t_0,
-this routine determines the state as predicted by a two-body
-force model at time t_0 + dt.
-*/
-/** @memberof SPICE
- * @todo Document and test this!
- */
-/* export function prop2b(gm,pvinit,dt){
-    var pvinit_ptr = arrayToMemory(pvinit,'double');
-    var pvprop_ptr = Module._malloc(48);
-    Module.ccall(
-        'prop2b_c',
-        null,
-        ["number","number","number","number",],
-        [gm,pvinit_ptr,dt,pvprop_ptr,]
-    );
-    var pvprop = [];
-    for(var i = 0; i < 6;i++){
-        pvprop.push(Module.getValue(pvprop_ptr+(i*8),'double'));
-    }
-    Module._free(pvprop_ptr);
-    Module._free(pvinit_ptr);
-
-    return pvprop;
-} */
 
 /* reset:
 Reset the CSPICE error status to a value of "no error."
@@ -803,9 +614,9 @@ export function scdecd(sc, sclkdp) {
         ['number', 'number', 'number', 'number'],
         [sc, sclkdp, 100, sclkch_ptr],
     );
-    const ret = Module.Pointer_stringify(sclkch_ptr);
+    const sclkch = Module.Pointer_stringify(sclkch_ptr);
     Module._free(sclkch_ptr);
-    return ret;
+    return sclkch;
 }
 
 /* sce2c:
@@ -821,16 +632,16 @@ returned.
  * @returns {number} The corresponding SCLK time for spacecraft sc in clock ticks.
  */
 export function sce2c(sc, et) {
-    const sclkdp_ptr = Module._malloc(8);
+    const sclkdp_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'sce2c_c',
         null,
         ['number', 'number', 'number'],
         [sc, et, sclkdp_ptr],
     );
-    const ret = Module.getValue(sclkdp_ptr, 'double');
+    const sclkdp = Module.getValue(sclkdp_ptr, DOUBLE_TYPE);
     Module._free(sclkdp_ptr);
-    return ret;
+    return sclkdp;
 }
 
 /* sce2s:
@@ -852,9 +663,9 @@ export function sce2s(sc, et) {
         ['number', 'number', 'number', 'number'],
         [sc, et, 100, sclkch_ptr],
     );
-    const ret = Module.Pointer_stringify(sclkch_ptr);
+    const sclkch = Module.Pointer_stringify(sclkch_ptr);
     Module._free(sclkch_ptr);
-    return ret;
+    return sclkch;
 }
 
 /* sce2t:
@@ -871,14 +682,14 @@ the routine sce2c_c.
  * @returns {number} The corresponding SCLK time for spacecraft sc in clock ticks to the closest integer.
  */
 export function sce2t(sc, et) {
-    const sclkdp_ptr = Module._malloc(8);
+    const sclkdp_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'sce2t_c',
         null,
         ['number', 'number', 'number'],
         [sc, et, sclkdp_ptr],
     );
-    const ret = Module.getValue(sclkdp_ptr, 'double');
+    const ret = Module.getValue(sclkdp_ptr, DOUBLE_TYPE);
     Module._free(sclkdp_ptr);
     return ret;
 }
@@ -895,16 +706,16 @@ double precision number.
  * @returns {number} Sclkch in spacecraft ticks.
  */
 export function scencd(sc, sclkch) {
-    const sclkdp_ptr = Module._malloc(8);
+    const sclkdp_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'scencd_c',
         null,
         ['number', 'string', 'number'],
         [sc, sclkch, sclkdp_ptr],
     );
-    const ret = Module.getValue(sclkdp_ptr, 'double');
+    const sclkdp = Module.getValue(sclkdp_ptr, DOUBLE_TYPE);
     Module._free(sclkdp_ptr);
-    return ret;
+    return sclkdp;
 }
 
 /* scfmt:
@@ -926,9 +737,9 @@ export function scfmt(sc, ticks) {
         ['number', 'number', 'number', 'number'],
         [sc, ticks, 100, clkstr_ptr],
     );
-    const ret = Module.Pointer_stringify(clkstr_ptr);
+    const clkstr = Module.Pointer_stringify(clkstr_ptr);
     Module._free(clkstr_ptr);
-    return ret;
+    return clkstr;
 }
 
 /* scpart:
@@ -943,8 +754,8 @@ clock kernel file.
  */
 export function scpart(sc) {
     const nparts_ptr = Module._malloc(INT_SIZE);
-    const pstart_ptr = Module._malloc(9999 * 8);
-    const pstop_ptr = Module._malloc(9999 * 8);
+    const pstart_ptr = Module._malloc(9999 * DOUBLE_SIZE);
+    const pstop_ptr = Module._malloc(9999 * DOUBLE_SIZE);
     Module.ccall(
         'scpart_c',
         null,
@@ -954,14 +765,14 @@ export function scpart(sc) {
     const pstop = [];
     const pstart = [];
     for (let i = 0; i < Module.getValue(nparts_ptr, INT_TYPE); i++) {
-        pstop.push(Module.getValue(pstop_ptr + i * 8, 'double'));
-        pstart.push(Module.getValue(pstart_ptr + i * 8, 'double'));
+        pstop.push(Module.getValue(pstop_ptr + i * DOUBLE_SIZE, DOUBLE_TYPE));
+        pstart.push(Module.getValue(pstart_ptr + i * DOUBLE_SIZE, DOUBLE_TYPE));
     }
     Module._free(nparts_ptr);
     Module._free(pstart_ptr);
     Module._free(pstop_ptr);
 
-    return {'pstart': pstart, 'pstop': pstop};
+    return { pstart, pstop };
 }
 
 /* scs2e:
@@ -976,16 +787,16 @@ J2000 (ET).
  * @returns {number} The corresponding time in ET seconds past J2000
  */
 export function scs2e(sc, sclkch) {
-    const et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'scs2e_c',
         null,
         ['number', 'string', 'number'],
         [sc, sclkch, et_ptr],
     );
-    const ret = Module.getValue(et_ptr, 'double');
+    const et = Module.getValue(et_ptr, DOUBLE_TYPE);
     Module._free(et_ptr);
-    return ret;
+    return et;
 }
 
 /* sct2e:
@@ -1000,16 +811,16 @@ seconds past J2000 (ET).
  * @returns {number} The corresponding time in ET seconds past J2000
  */
 export function sct2e(sc, sclkdp) {
-    const et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'sct2e_c',
         null,
         ['number', 'number', 'number'],
         [sc, sclkdp, et_ptr],
     );
-    const ret = Module.getValue(et_ptr, 'double');
+    const et = Module.getValue(et_ptr, DOUBLE_TYPE);
     Module._free(et_ptr);
-    return ret;
+    return et;
 }
 
 /* sctiks:
@@ -1024,16 +835,16 @@ Convert a spacecraft clock format string to number of "ticks".
  * since the beginning of the mission, and so uses partition information. sctiks_c just converts to absolute ticks.
  */
 export function sctiks(sc, clkstr) {
-    const ticks_ptr = Module._malloc(8);
+    const ticks_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'sctiks_c',
         null,
         ['number', 'string', 'number'],
         [sc, clkstr, ticks_ptr],
     );
-    const ret = Module.getValue(ticks_ptr, 'double');
+    const ticks = Module.getValue(ticks_ptr, DOUBLE_TYPE);
     Module._free(ticks_ptr);
-    return ret;
+    return ticks;
 }
 
 /* spd:    Return the number of seconds in a day.
@@ -1063,16 +874,16 @@ epoch corresponding to the input epoch.
  * @returns {number} The corresponding time in ET seconds past J2000.
  */
 export function str2et(str) {
-    const et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'str2et_c',
         null,
         ['string', 'number'],
         [str, et_ptr],
     );
-    const ret = Module.getValue(et_ptr, 'double');
+    const et = Module.getValue(et_ptr, DOUBLE_TYPE);
     Module._free(et_ptr);
-    return ret;
+    return et;
 }
 
 /* timdef:
@@ -1092,9 +903,9 @@ export function timdef(action, item, value) {
         [action, item, 100, value_ptr],
     );
 
-    const ret = Module.Pointer_stringify(value_ptr);
+    const value = Module.Pointer_stringify(value_ptr);
     Module._free(value_ptr);
-    return ret;
+    return value;
 }
 
 /* timout:
@@ -1117,9 +928,9 @@ export function timout(et, pictur) {
         ['number', 'string', 'number', 'number'],
         [et, pictur, 100, output_ptr],
     );
-    const ret = Module.Pointer_stringify(output_ptr);
+    const output = Module.Pointer_stringify(output_ptr);
     Module._free(output_ptr);
-    return ret;
+    return output;
 }
 
 /* tparse:
@@ -1130,7 +941,7 @@ on a formal calendar.
  * @todo Document and test this!
  */
 export function tparse(string) {
-    const sp2000_ptr = Module._malloc(8);
+    const sp2000_ptr = Module._malloc(DOUBLE_SIZE);
     const errmsg_ptr = Module._malloc(2000);
     Module.ccall(
         'tparse_c',
@@ -1139,16 +950,11 @@ export function tparse(string) {
         [string, 2000, sp2000_ptr, errmsg_ptr],
     );
     const errmsg = Module.Pointer_stringify(errmsg_ptr);
-    const sp2000 = Module.getValue(sp2000_ptr, 'double');
+    const sp2000 = Module.getValue(sp2000_ptr, DOUBLE_TYPE);
     Module._free(errmsg_ptr);
     Module._free(sp2000_ptr);
 
-    if (errmsg === '') {
-        return sp2000; // If string correctly parses return the value, otherwise return undefined and output the error message
-    } else {
-        console.error(errmsg);
-        return undefined;
-    }
+    return { sp2000, errmsg };
 }
 
 /* tpictr:
@@ -1171,19 +977,14 @@ export function tpictr(sample) {
         ['string', 'number', 'number', 'number', 'number', 'number'],
         [sample, 100, 2000, picture_ptr, ok_ptr, errmsg_ptr],
     );
-    const ret = Module.Pointer_stringify(picture_ptr);
+    const picture = Module.Pointer_stringify(picture_ptr);
     const ok = Module.getValue(ok_ptr, INT_TYPE);
     const errmsg = Module.Pointer_stringify(errmsg_ptr);
     Module._free(picture_ptr);
     Module._free(ok_ptr);
     Module._free(errmsg_ptr);
 
-    if (ok) { // if correctly parsed
-        return ret; // return the picture
-    } else {
-        console.error(errmsg); // Error
-        return undefined;
-    }
+    return { picture, ok, errmsg };
 }
 
 /* tsetyr:   Set the lower bound on the 100 year range
@@ -1247,21 +1048,19 @@ to ephemeris seconds past J2000.
  * @returns {number} The corresponding time in ET seconds past J2000.
  */
 export function utc2et(utcstr) {
-    const et_ptr = Module._malloc(8);
+    const et_ptr = Module._malloc(DOUBLE_SIZE);
     Module.ccall(
         'utc2et_c',
         null,
         ['string', 'number'],
         [utcstr, et_ptr],
     );
-    const ret = Module.getValue(et_ptr, 'double');
+    const et = Module.getValue(et_ptr, DOUBLE_TYPE);
     Module._free(et_ptr);
-    return ret;
+    return et;
 }
 
-// TODO: validate this
 export function spkpos(targ, et, ref, abcorr, obs) {
-
 	// create output pointers
 	const ptarg_ptr = Module._malloc(DOUBLE_SIZE * 3);
 	const lt_ptr = Module._malloc(DOUBLE_SIZE);
@@ -1286,5 +1085,4 @@ export function spkpos(targ, et, ref, abcorr, obs) {
 	Module._free( lt_ptr );
 
 	return { ptarg, lt };
-
 }
