@@ -97,113 +97,81 @@ This file contains the ported CSPICE source code. It is extremely large and shou
 
 #### spice.js
 
-This file contains the wrapper functions that allow access to the functionality in cspice.js and also adds some additional features. The version of spice.js here is entirely focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed. If running in Node, import timecraft.js, not this file.
+This file contains the wrapper functions that allow access to the functionality in cspice.js. The version of spice.js here is focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed.
 
 #### timecraft.js
 
 This file handles detecting if running in Node or a browser, making requests for and furnishing kernels, setting up the timecraft object, setting values and calling events once setup has finished, and outputting CSPICE errors. The first line of this file must be array of kernels to request and furnish, and that first line is edited by other scripts in this file (kernel_setup.py and/or postinstall.js, specifically). If running in Node, this is the file to import.
 
-## How To Use And Supported Functions
-### Making Calls
-#### General
-Most of the functions made available in this library are functions from CSPICE called in a more Javascript-like way. Please see [differences between cspice and spice.js](https://github.com/NASA-AMMOS/timecraftjs.js#differences-between-cspice-and-spicejs) for specifics. **Note that in the default behavior, such as the behavior of [example-timecraftjs.html](https://github.com/NASA-AMMOS/timecraftjs#example-timecraftjshtml-1), simply locally opening the html file will not work. At least a minimal server is required. See [example-timecraftjs.html](https://github.com/NASA-AMMOS/timecraftjs#example-timecraftjshtml-1) for details.**
-#### Browser
-In order to use TimecraftJS in a browser, you will need to load spice.js, timecraft.js, and cspice.js into the page in some way. If the page doing so is in the directory with the node_modules directory, this can be accomplished by adding the following in the head of the page:
-```
-<script type="text/javascript" src="./node_modules/timecraftjs/spice.js"></script>
-<script type="text/javascript" src="./node_modules/timecraftjs/timecraft.js"></script>
-<script type="text/javascript" src="./node_modules/timecraftjs/cspice.js"></script>
-```
-**Note that the order of tags matters! If cspice.js runs before spice.js or timecraft.js it will set up incorrectly. If something similar to `pre-main prep time: 5 m` is printed to the console on startup and timecraft.is_ready never becomes true, this is why.**
+## API
 
-You can launch the sample hrml file provided with htis library by simply running the commands below in the base directory:
+### Functions
 
-```sh
-npm install gulp-cli -g
-npm install gulp@^3.9.1
-npm install browser-sync gulp --save-dev
+### Spice
 
-gulp serve
-```
+Most of the functions made available in this library are functions from CSPICE called in a more Javascript-like way. Please see [differences between cspice and spice.js](https://github.com/NASA-AMMOS/timecraftjs.js#differences-between-cspice-and-spicejs) for specifics.
 
-###### `Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
-The `timecraft` object contains all of the wrapped functions. These are called in the form `timecraft.et2utc(43523178.23,"ISOC",4)`.
-It is expected (but not required) that all required kernels are loaded asynchronously (see the Loading Kernels section below for more details). As such, calls on the timecraft object before its is fully loaded are likely to fail and cause errors. This wait time is typically very short, well under a second as long as less than 20 MB of kernels are to be loaded. When TimeCraftJS is completely loaded and the kernels required on startup are furnished, `timecraft.is_ready` will change from `false` or `undefined` to `true`. Additionally, the `timecraftready` event will be dispatched to the `window` object. After this point you can be certain the timecraft object is fully setup and `main` has been called on the ported C code.
+While the ported C code technically contains all CSPICE functionality, the following functions have been exposed in this library. The [CSPICE documentation](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html) for each of these functions is correct, but below you can see their more Javascript-like call format supported here. All documented CSpice function inputs are passed into the Javascript equivelants below while all outputs are returned as a dictionary indexed by parameter name or as a single value if there is only a single output.
 
-###### If for whatever reason you wish to bypass all wrapping functions and make calls directly to the ported CSPICE code, see the Emscripten documentation on [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall).
-#### Node
-In order to use TimeCraftJS in node, simply `var VARNAME = require("timecraftjs/timecraft.js")`. TimeCraftJS should include everything else and furnish the kernels required on startup. This process is synchronous and requires [fs](https://nodejs.org/api/fs.html). Calls to TimeCraftJS can then be made via `VARNAME.et2utc(43523178.23,"ISOC",4)`.
-
-###### If for whatever reason you wish to bypass all wrapping functions and make calls directly to the ported CSPICE code, you will need to `require("timecraftjs/cspice.js")`. See the Emscripten documentation on [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall).
-#### Supported Functions
-While the ported C code technically contains all CSPICE functionality, the following functions have been exposed in this library. The [CSPICE documentation](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html) for each of these functions is correct, but below you can see their more Javascript-like call format supported here.
 ```
 b1900()
 b1950()
-bodc2n(code)
-bodc2s(code)
-boddef(name,code)
-bodfnd(body,item)
-bodn2c(name)
-bods2c(name)
-bodvcd(bodyid,item,maxn)
-bodvrd(body, item, maxn)
-convrt(x,in_var,out)
-deltet(epoch,eptype)
-erract(op,action)
-et2lst(et,body,lon,type)
-et2utc(et,format,prec)
-etcal(et)
+bodc2n( code )
+bodc2s( code )
+boddef( name, code )
+bodfnd( body, item )
+bodn2c( name )
+bods2c( name )
+bodvcd( bodyid, item, maxn )
+bodvrd( body, item, maxn )
+convrt( x, in_var, out )
+deltet( epoch, eptype )
+erract( op, action )
+et2lst( et, body, lon, type )
+et2utc( et, format, prec )
+etcal( et )
 failed()
-furnsh(kernelPaths)
-getmsg(options)
+furnsh( kernelPaths )
+getmsg( options )
 j1900()
 j1950()
 j2000()
 j2100()
 jyear()
-ltime(etobs,obs,dir,targ)
+ltime( etobs, obs, dir, targ )
 reset()
-scdecd(sc,sclkdp)
-sce2c(sc,et)
-sce2s(sc,et)
-sce2t(sc,et)
-scencd(sc,sclkch)
-scfmt(sc,ticks)
-scpart(sc)
-scs2e(sc,sclkch)
-sct2e(sc,sclkdp)
-sctiks(sc,clkstr)
+scdecd( sc, sclkdp )
+sce2c( sc, et )
+sce2s( sc, et )
+sce2t( sc, et )
+scencd( sc, sclkch )
+scfmt( sc, ticks )
+scpart( sc )
+scs2e( sc, sclkch )
+sct2e( sc, sclkdp )
+sctiks( sc, clkstr )
 spd()
-str2et(str)
-timdef(action,item,value)
-timout(et,pictur)
-tparse(string)
-tpictr(sample)
-tsetyr(year)
+str2et( str )
+timdef( action, item, value )
+timout( et, pictur )
+tparse( string )
+tpictr( sample )
+tsetyr( year )
 tyear()
-unitim(epoch,insys,outsys)
-utc2et(utcstr)
+unitim( epoch, insys, outsys )
+unload( file )
+utc2et( utcstr )
 ```
+
+### CSpice
+
+This is the raw Emscripten compiled module that is used to call CSpice functions and interact with the virtual file system. There is typically no need to use this object but unexposed CSpice functions can be called here using `ccall`.
+
+`Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
+
 ###### If you wish to have access to Local Mean Solar Time, you will need to load a relevant kernel. [This kernel](https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/data/sclk/msl_lmst_ops120808_v1.tsc), for example, implements LMST in relation to MSL.
-#### New Functions
-Additionally, several functions have been added on top of these for convenience in use with Javascript. Below is a list of these and some documentation on each.
-```
-chronos_call(cmdlin,inptim)
-convert(x,in_var,out)
-date2et(date)
-et2date(et)
-et2lsun(et,landingtime,body,scid,sol1index)
-et2ltst(et,landingtime,body,scid,sol1index)
-et2str(et)
-furnish(kernelPaths)
-furnish_via_preload_file_data(path,buffer)
-furnish_via_xhr_request(kernelPaths,xhr_callback,callback)
-ltst2et(ltst,landingtime,body,scid,sol1index)
-node_furnish(path)
-set_error_report_then_reset()
-unset_error_report_then_reset(action)
-```
+
+
 ##### chronos_call(cmdlin,inptim)
 In order to have access to conversions to and from local true solar time, the [chronos](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) utility has been complied into Javascript as well. This function makes a direct call to the `cronos_` function. Please read the chronos [user's guide](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html). It also helps to look directly at the source from cronos.c which can be found by downloading a toolkit and looking in the src directory.
 ##### convert(x,in_var,out)
@@ -234,26 +202,9 @@ Call this function to set the error behavior of SPICE to a special, more Javascr
 Changes CSPICE error behavior from the special Javascript-like error behavior added here to `action`. `action` can be "ABORT", "REPORT", "RETURN", "IGNORE", or "DEFAULT". See [erract](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/erract_c.html) for more details.
 
 ## Loading Kernels
-### Using NPM
-#### Default
-If you are using TimeCraftJS as an npm package, you can create a `kernel_list.json` file to specify a JSON object containing a list of URL's to kernels on [NAIF's website](https://naif.jpl.nasa.gov/pub/naif/) paired with paths within the kernels directory to save them. The default set of kernels, for example, would use the kernel_list.json:
-```
-[
-	{
-		"url":"https://naif.jpl.nasa.gov/pub/naif/generic_kernels/lsk/naif0012.tls",
-		"path":"kernels/lsk/naif0012.tls"
-	},
-	{
-		"url":"https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/data/spk/de425s.bsp",
-		"path":"kernels/spk/de425s.bsp"
-	},
-	{
-		"url":"https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00010.tpc",
-		"path":"kernels/pck/pck00010.tpc"
-	}
-]
-```
-When postinstall or TimeCraftJS is run it will search for this file, starting in the `TimeCraftJS` directory and then recursively higher. As long as `kernel_list.json` is inside of or in a directory that is a parent of TimeCraftJS it will be found. Upon finding this file it will download all the kernels within and set timecraft.js to load them asynchronously. This file is not required if you only wish to use the default kernels. Kernels will be retrieved via XHR 'GET' requests once the page loads. You must explicitly specify all kernels you wish to use, including the defaults. `example_kernel_list.json` shows how this file should be formatted. Once all furnishes are finished, `timecraft.is_ready` will change from `false` or `undefined` to `true`. Additionally, the `timecraftready` event will be dispatched to the `window` object.
+
+TODO
+
 #### Advanced
 If necessary, for example if you do not expect the user to have a `kernel_list.json` present in a parent of `timecraft` before they install npm packages, `postinstall.js` may be called manually or by a script. The default behavior
 ```
@@ -298,7 +249,9 @@ As node has access to the computer's file system, kernel files are always loaded
 
 ## Recompiling cspice.js (JPL Internal only)
 `cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on July 25, 2017.
+
 In order to recompile cspice.js, follow these steps:
+
 * First, download and extract a relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 * Second, clone [the timecraft_recompiling branch of spice.js](https://github.jpl.nasa.gov/johnt/spice.js/tree/spicey_recompiling) into a folder.
 * Third, delete the `cspice` directory from the newly downloaded spice.js and replace it with the toolkit you downloaded. Delete cspice.a from cspice/lib (this is not strictly necessary but occasionally causes problems). Optionally, also delete the `cspice.js` file as it will be replaced anyway.
@@ -306,5 +259,4 @@ In order to recompile cspice.js, follow these steps:
 * Fifth, run `./cspice.sh`. This will move the required chronos files to be included in cspice, compile it, and then port it to a new cspice.js file.
 * Finally, replace the cspice.js in TimeCraftJS with the newly compiled one.
 
-## TimeCraftJS_example.html
-`example-timecraftjs.html` gives an example of setting up and running TimeCraftJS in a browser. To get it running, once you have run `npm install timecraftjs`, move this file so that it is in the same directory as the node_modules directory. Then start a server and navigate to the page. An extremely easy and quick way of starting a server to test this is with [http-server](https://www.npmjs.com/package/http-server). If all is working correctly, "Mars" and "2001-05-19T05:45:14.0448" should appear in the console. If you instead preload data synchronously, it should also work without even the server.
+
