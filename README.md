@@ -92,8 +92,6 @@ See example-timecraftjs.html for a simple demo of TimeCraftJS working.
 
 This section lists the files included in this package and describes what each of them does. This section is mainly for people who wish to modify this package, if you simply wish to use it you can likely skip this section.
 
-### Main Files
-
 #### cspice.js
 
 This file contains the ported CSPICE source code. It is extremely large and should not be modified. This file must begin executing after spice.js and timecraft.js, so make sure to include it last. If running in Node, import timecraft.js, not this file.
@@ -210,8 +208,6 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 
 `Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
 
-###### If you wish to have access to Local Mean Solar Time, you will need to load a relevant kernel. [This kernel](https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/data/sclk/msl_lmst_ops120808_v1.tsc), for example, implements LMST in relation to MSL.
-
 ## Loading Kernels
 
 ### In the Browser
@@ -233,5 +229,3 @@ In order to recompile cspice.js, follow these steps:
 * Fourth, run `./install.sh`. This will download and set up the required Emscripten files from archived version 1.34.1 and will take some time. We are using this version as the most recent version has problems in the final step. Make certain your have [everything required for Emscripten to run](https://kripken.github.io/emscripten-site/docs/building_from_source/toolchain_what_is_needed.html).
 * Fifth, run `./cspice.sh`. This will move the required chronos files to be included in cspice, compile it, and then port it to a new cspice.js file.
 * Finally, replace the cspice.js in TimeCraftJS with the newly compiled one.
-
-
