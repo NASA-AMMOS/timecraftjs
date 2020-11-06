@@ -8,19 +8,22 @@ United States Government Sponsorship acknowledged. Any commercial use must be ne
 This software may be subject to U.S. export control laws. By accepting this software, the user agrees to comply with all applicable U.S. export laws and regulations. User has the responsibility to obtain export licenses, or other export authority as may be required before exporting such information to foreign countries or providing access to foreign persons.
 
 # TimeCraftJS
+
 TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/).
 
-It is of extreme importance for different systems to understand time and calculate operations consistently. TimeCraftJS exposes functions to execute operations to convert SCET, ET, SCT, furnish Kernels, among others, in the client side. This avoid unnecessary trips to the backend and makes allows for important time operations to happen if network connectivity is not immediately available.  
+It is of extreme importance for different systems to understand time and calculate operations consistently. TimeCraftJS exposes functions to execute operations to convert SCET, ET, SCT, furnish Kernels, among others, in the client side. This avoid unnecessary trips to the backend and makes allows for important time operations to happen if network connectivity is not immediately available.
 
-## Quick Start
+Some basic kernels are provided in this repo for performing time conversions. More kernels for other missions can be found [here](https://naif.jpl.nasa.gov/pub/naif/pds/data/).
 
-### Installation via NPM
+# Quick Start
+
+## Installation via NPM
 
 ```shell
 npm install timecraftjs
 ```
 
-### Time Conversion
+## Time Conversion
 
 ```js
 import * as TimeCraft from 'timecraftjs';
@@ -49,7 +52,11 @@ const et = Timecraft.Spice.utc2et( utc );
 const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 ```
 
-### Browser testing
+## Using the Chronos Function
+
+TODO
+
+## Running the Example
 
 1.  Clone the Repository
 
@@ -66,9 +73,7 @@ npm start
 
 This will start a static server so you can visit the example page at `localhost:9080/example/`.
 
-## TimeCraftJS
-
-### Table Of Contents
+## Table Of Contents
 
 #### [What Is TimeCraftJS?](https://github.com/NASA-AMMOS/timecraftjs#what-is-timecraftjs-1)
 #### [Included Files](https://github.com/NASA-AMMOS/timecraftjs#included-files-1)
@@ -106,6 +111,44 @@ This file handles detecting if running in Node or a browser, making requests for
 ## API
 
 ### Functions
+
+#### prepareFileFromBuffer
+
+```js
+prepareFileFromBuffer( path : String, buffer : ArrayBuffer | Uint8Array ) : void
+```
+
+#### removeFile
+
+```js
+removeFile( path : String ) : void
+```
+
+#### loadKernel
+
+```js
+loadKernel( path : String ) : void
+```
+
+#### loadKernelFromBuffer
+
+```js
+loadKernelFromBuffer( buffer : ArrayBuffer | Uint8Array ) : void
+```
+
+#### unloadKernel
+
+```js
+unloadKernel( path : String ) : void
+```
+
+#### chronos
+
+```js
+chronos( inptim : Number, cmdlin : String ) : String
+```
+
+Wrapper for the CSpice command line utility that calls the `cronos_` function internally. `inptim` is the input time to convert while `cmdlin` is the list of command line arguments as a string. See the [chronos](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) docs for more information.
 
 ### Spice
 
@@ -171,81 +214,15 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 
 ###### If you wish to have access to Local Mean Solar Time, you will need to load a relevant kernel. [This kernel](https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/data/sclk/msl_lmst_ops120808_v1.tsc), for example, implements LMST in relation to MSL.
 
-
-##### chronos_call(cmdlin,inptim)
-In order to have access to conversions to and from local true solar time, the [chronos](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) utility has been complied into Javascript as well. This function makes a direct call to the `cronos_` function. Please read the chronos [user's guide](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html). It also helps to look directly at the source from cronos.c which can be found by downloading a toolkit and looking in the src directory.
-##### convert(x,in_var,out)
-This is the same as CSPICE's [convrt](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/convrt_c.html) but under a different name.
-##### date2et(date)
-Convert a Javascript Date object to an ET in seconds past J2000.
-##### et2date(et)
-Convert an ET in seconds past J2000 into a Javascript Date object.
-##### et2lsun(et,landingtime,body,scid,sol1index)
-Convert an ET in seconds past J2000 into a LSUN string. This is similar to computing the 'season' on another body. The time of landing, NAIF ID of the body in question, NAIF ID of the spacecraft, and value of of the first SOL (typically 0 or 1) must be provided. A landing location and enough ephemeris data must be provided by loaded kernels. See the [chronos user's guide](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html#LST Time Types) for more information. There is no support for converting for lsun to et.
-##### et2ltst(et,landingtime,body,scid,sol1index)
-Convert an ET in seconds past J2000 into a Local True Solar Time string. This is essentially the same as calculating where the sun actually is in the sky and display that on a 24-hour clock. This function is only accurate to the nearest second. The time of landing, NAIF ID of the body in question, NAIF ID of the spacecraft, and value of of the first SOL (typically 0 or 1) must be provided. A landing location and enough ephemeris data must be provided by loaded kernels. See the [chronos user's guide](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) for more information.
-##### et2str(et)
-Convert an ET in seconds past J2000 into a calendar format.
-##### furnish(kernelPaths)
-This is the same as CSPICE's [furnsh](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/furnsh_c.html) but under a different name.
-##### furnish_via_preload_file_data(path,buffer)
-If a synchronous preloading file has been created (see Loading Kernels below), this function is called on startup to load these files. Users are not expected to use this function. Regardless, `path` is the absolute path to save to within Emscripten's file system and `buffer` is an array containing the file data to be saved.
-##### furnish_via_xhr_request(kernelPaths,xhr_callback,callback)
-This function is used to request, save to Emscripten's file system, and then furnish additional kernels. This is the recommended way to load kernels in a browser and will be called on startup for all kernels needed on startup. See Loading Kernels below for details. You only need to use this function yourself if you wish to load additional kernels after startup. This function constructs an xhr request that your server must handle and send the correct file to be loaded in to the file system. Only functions in a browser. `kernelPaths` is a string or array of strings that are the paths to the required kernel files (if an array, a separate request will be made for each). The request is a 'GET' request for the path(s) specified. `xhr_callback` is called after every request is answered and is passed the status and any errors. If `xhr.onload` received a status 200, this function first saves what it received into the Emscripten file system and then calls `furnish(kernelPath[i])` on it before calling xhr_callback. `callback` is called at the very end after the final `xhr_callback` call.
-##### ltst2et(ltst,landingtime,body,scid,sol1index)
-Convert a Local True Solar Time string to an ET in seconds past J2000. The time of landing, NAIF ID of the body in question, NAIF ID of the spacecraft, and value of of the first SOL (typically 0 or 1) must be provided. A landing location and enough ephemeris data must be provided by loaded kernels. See the [chronos user's guide](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) for more information.
-##### node_furnish(path)
-When running in node, this function saves a file to Emscripten's file system and then furnishes it. This function will be called on startup for all kernels needed on startup. See Loading Kernels below for details. You only need to use this function yourself if you wish to load additional kernels after startup. `path` is the relative or absolute path to the kernel.
-##### set_error_report_then_reset()
-Call this function to set the error behavior of SPICE to a special, more Javascript-like behavior. See `unset_error_report_then_reset(action)` below for alternatives. This function sets the CSPICE error behavior to "REPORT" and makes it so that when an error occurs, timecraft will first print out the reported error and then call `timecraft.reset()` to allow the underling C code to continue functioning properly. If neither this function nor `timecraft.erract` are called, the default error behavior will be used. See [erract](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/erract_c.html) for more details.
-##### unset_error_report_then_reset(action)
-Changes CSPICE error behavior from the special Javascript-like error behavior added here to `action`. `action` can be "ABORT", "REPORT", "RETURN", "IGNORE", or "DEFAULT". See [erract](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/erract_c.html) for more details.
-
 ## Loading Kernels
+
+### In the Browser
 
 TODO
 
-#### Advanced
-If necessary, for example if you do not expect the user to have a `kernel_list.json` present in a parent of `timecraft` before they install npm packages, `postinstall.js` may be called manually or by a script. The default behavior
-```
-node postinstall.js
-```
-will search for a kernel_list.json first in the `timecraft` directory and then recursively higher. If a path is passed as a third command line argument
-```
-node postinstall.js <path to kernel_list.json>
+### In Node
 
-Example:
-node postinstall.js ../my_package/kernel_list.json
-```
-the script will first search for a kernel_list.json as before, and, if it does not find one, will use the provided path. If the user has provided their own kernel_list.json, the one passed in on the command line will be ignored. This behavior can be overridden using
-```
-node postinstall.js <path to kernel_list.json> override
-
-Example:
-node postinstall.js ../my_package/kernel_list.json override
-```
-which will immediately use the provided kernel_list.json and not allow users to specify their own. If, for whatever reason, postinstall.js is called multiple times on the same kernel_list.json, kernels will only be downloaded once.
-**In all cases, when using this method of kernel setup, a `kernels` directory must exist within and be served from `/node_modules/timecraftjs`. If this is not desired, see Manually below.**
-### Manually
-To set which kernels should be loaded on startup, download the required kernels from [NAIF's website](https://naif.jpl.nasa.gov/pub/naif/) and keep them somewhere in the kernels directory. Then run `python kernel_setup.py <File containing list of kernels> <Path to the kernels directory>`.
-`<File containing list of kernels>` is the name of a file containing a new-line separated list of kernels to load on startup. `kernels_to_load.txt` is an example. You can alternatively use `-all` here to including all kernels in (or in a subdirectory of) the kernels directory.
-`<Path to the kernels directory>` is a path to the directory which contains kernels directory (`./node_modules/timecraftjs`, for example). XHR `GET` requests will be made for specified files in the kernels directory within this path when loading asynchronously. If this is left blank it will default to `/node_modules/timecraftjs`.
-Kernels set for loading on startup this way will be loaded and furnished before calls to TimeCraftJS may be made. This is a synchronous process in node (via `node_furnish`) and, by default, an asynchronous process in the browser (via `furnish_via_xhr_request`). If asynchronous loading is used in a browser, once all furnishes are finished, `timecraft.is_ready` will change from `false` or `undefined` to `true`. Additionally, the `timecraftready` event will be dispatched to the `window` object. Note that, when using manual kernel setup, a `kernels` directory is required to exist but it need not necessarily exist at `/node_modules/timecraftjs/kernels`. As long as you point `timecraft.js` to the correct location with `kernel_setup.py`, the  `kernels` directory can be anywhere.
-### Browser
-#### Asynchronously (Recommended)
-The default method for loading kernels on startup is asynchronously. See `furnish_via_xhr_request` to load additional files after startup.
-#### Synchronously
-In order to make sure kernels will be loaded synchronously and will be in place before any other functions can be run, after running `python kernel_setup.py`, also run `node preload.js`. This will create a massive Javascript file called `preload_file_data.js` containing a representation of each of the required kernels that Emscripten's file system can understand. This js file must be included in a script tag before the other three, such as:
-```
-<script type="text/javascript" src="./node_modules/timecraftjs/preload_file_data.js"></script>
-<script type="text/javascript" src="./node_modules/timecraftjs/spice.js"></script>
-<script type="text/javascript" src="./node_modules/timecraftjs/timecraft.js"></script>
-<script type="text/javascript" src="./node_modules/timecraftjs/cspice.js"></script>
-```
-**Note that the order of tags matters! If cspice.js runs before spice.js or timecraft.js it will set up incorrectly. If something similar to `pre-main prep time: 5 m` is printed to the console on startup and timecraft.is_ready never becomes true, this is why.**
-This file is likely to be massive and will make it take upwards of 30 seconds to load the page for even the default kernels. As such it is heavily recommended that asynchronous loading is used. Kernels can only be loaded asynchronously after startup if synchronous loading on startup is used.
-### Node
-As node has access to the computer's file system, kernel files are always loaded and furnished synchronously. To load more kernels after startup, see `node_furnish(path)`.
+TODO
 
 ## Recompiling cspice.js (JPL Internal only)
 `cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on July 25, 2017.
