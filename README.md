@@ -214,7 +214,7 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 
 ## Loading Kernels
 
-In order to load an read kernels the data must be loaded into the virtual Emscripten file system as a binary buffer. Files can be loaded an read into Spice immediately or files can be placed into the file system and read in later.r
+In order to load an read kernels the data must be loaded into the virtual Emscripten file system as a binary buffer. Files can be loaded an read into Spice immediately or files can be placed into the file system and read in later.
 
 ### In the Browser
 
