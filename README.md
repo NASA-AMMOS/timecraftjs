@@ -14,29 +14,38 @@ It is of extreme importance for different systems to understand time and calcula
 
 ## Quick Start
 
-### Install via NPM
-
-1. Install TimeCraftJS via NPM:
+### Installation via NPM
 
 ```shell
-npm install --savedev timecraftjs
+npm install timecraftjs
 ```
 
-2. Import the libraries:
+### Time Conversion
 
-```html
-<script type="text/javascript" src="./node_modules/spice.js"></script>
-<script type="text/javascript" src="./node_modules/timecraft.js"></script>
-<script type="text/javascript" src="./node_modules/cspice.js"></script>
-```
+```js
+import * as TimeCraft from 'timecraftjs';
 
-3. Start calling the timecraft functions:
+// Load the kernels
+const kernelBuffers = await Promise.all( [
+    
+    fetch( '../kernels/lsk/naif0012.tls' ).then( res => res.buffer() ),
+    fetch( '../kernels/spk/de425s.bsp' ).then( res => res.buffer() ),
+    fetch( '../kernels/pck/pck00008.tpc' ).then( res => res.buffer() ),
 
-```javascript
-window.addEventListener('timecraftready',function(){
-		console.log(timecraft.bodc2n(499));
-		console.log(timecraft.et2utc(43523178.23,"ISOC",4));
-	});
+] );
+
+// Load the kernels into Spice
+for ( let i = 0; i < kernelBuffers.length; i ++ ) {
+
+    TimeCraft.loadKernelFromBuffer( kernelBuffers[ i ] );
+
+}
+
+const utc = new Date().toISOString().slice( 0, - 1 );
+
+const et = Timecraft.Spice.utc2et( utc );
+
+const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 ```
 
 ### Browser testing
