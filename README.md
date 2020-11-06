@@ -41,6 +41,7 @@ for ( let i = 0; i < kernelBuffers.length; i ++ ) {
 
 }
 
+// Time conversion!
 const utc = new Date().toISOString().slice( 0, - 1 );
 
 const et = Timecraft.Spice.utc2et( utc );
@@ -51,26 +52,21 @@ const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 ### Browser testing
 
 1.  Clone the Repository
-```shell
+
+```sh
 git clone https://github.com/NASA-AMMOS/timecraftjs.git
 ```
 
 2.  Run the following on the base directory:
 
-```shell
-npm install gulp-cli -g
-npm install gulp@^3.9.1
-npm install browser-sync gulp --save-dev
-
-gulp serve
-
+```sh
+npm install
+npm start
 ```
 
-This will run the test html file on your browser. Check your browser console for the results!  
+This will start a static server so you can visit the example page at `localhost:9080/example/`.
 
-
-
-## TimeCraftJS (on detail...)
+## TimeCraftJS
 
 ### Table Of Contents
 
@@ -83,44 +79,30 @@ This will run the test html file on your browser. Check your browser console for
 #### [example-timecraftjs.html](https://github.com/NASA-AMMOS/timecraftjs#timecraftjs_examplehtml-1)
 
 ### What Is TimeCraftJS?
+
 TimecraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). In order to accomplish this, we automatically converted the C source code into Javascript via [Emscripten](http://kripken.github.io/emscripten-site/index.html). In order for them to work in a much more user friendly and Javascript-like way, we have created wrapper functions that interact with the resulting simulated C program, allocating and deallocating memory as necessary. This project only includes wrappers for the functions relevant to time conversion and some light time calculations. This project is an offshoot of spice.js.
+
 A great deal below deals with the loading and furnishing of kernels. If you do not wish to do any time conversions involving specific spacecraft or planets, the default included kernels are sufficient and you may ignore these sections. The default kernels are enough to refer to most NAIF ID's, a planetary constants kernel, and a leap seconds kernel.
 See example-timecraftjs.html for a simple demo of TimeCraftJS working.
 
 ### Included Files
+
 This section lists the files included in this package and describes what each of them does. This section is mainly for people who wish to modify this package, if you simply wish to use it you can likely skip this section.
+
 ### Main Files
+
 #### cspice.js
+
 This file contains the ported CSPICE source code. It is extremely large and should not be modified. This file must begin executing after spice.js and timecraft.js, so make sure to include it last. If running in Node, import timecraft.js, not this file.
+
 #### spice.js
+
 This file contains the wrapper functions that allow access to the functionality in cspice.js and also adds some additional features. The version of spice.js here is entirely focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed. If running in Node, import timecraft.js, not this file.
+
 #### timecraft.js
+
 This file handles detecting if running in Node or a browser, making requests for and furnishing kernels, setting up the timecraft object, setting values and calling events once setup has finished, and outputting CSPICE errors. The first line of this file must be array of kernels to request and furnish, and that first line is edited by other scripts in this file (kernel_setup.py and/or postinstall.js, specifically). If running in Node, this is the file to import.
-### Other Files
-#### example_kernel_list.json
-This file gives an example of the correct format for `kernel_list.json` used by postinstall.js.
-#### kernel_setup.py
-This is a python file used for manually setting up kernels. It modifies the first lines of timecraft.js and preload.js. See [Loading Kernels](https://github.com/NASA-AMMOS/timecraft#loading-kernels-1) for more information.
-#### kernels_to_load.txt
-This file gives an example of the correct format for input to kernel_setup.py. See [Loading Kernels](https://github.com/NASA-AMMOS/timecraft#loading-kernels-1) for more information.
-#### postinstall.js
-This file is run after timecraft is installed (via NPM), but it may also be called manually. It searches for (or may be provided) a `kernel_list.json` file to define which kernels to download and configures timecraft to request and furnish them on startup. It modifies the first line of timecraft.js but **not** preload.js. See [Loading Kernels](https://github.com/NASA-AMMOS/TimeCraftJS#loading-kernels-1) for more information.
-#### preload.js
-This script may be run to create a (usually quite massive) javascript file that be included in a browser to enforce that kernels are loaded synchronously. For even the simplest of time conversions, this file ends up so large that the page takes 30 second and above to start up, so it is highly recommended you use asynchronous loading instead. If you absolutely must synchronously load kernels in a browser, include  the result of running this script before the other three main files. See [Loading Kernels](https://github.com/NASA-AMMOS/timecraftjs#loading-kernels-1) for more information.
-#### example-timecraftjs.html
-This file gives an example of how to use TimeCraftJS in a browser. See [example-timecraftjs.html](https://github.com/NASA-AMMOS/timecraftjs#timecraft_examplehtml-1) for more information.
 
-## Downloading
-### How To
-To download, run `npm install timecraftjs` or clone this repository.
-
-If you already know which kernels you want, you can use specify a `kernel_list.json` file as described in [Loading Kernels](https://github.com/NASA-AMMOS/timecraftjs#loading-kernels-1). See [NAIF's folder of data files](https://naif.jpl.nasa.gov/pub/naif/) or look at [the NAIF website](https://naif.jpl.nasa.gov/naif/) for more information on kernels.
-**Note if you are compiling with webpack!** This package relies on Node's "fs" module, and may cause a  `Module not found: Error: Can't resolve 'fs'...` error. If this occurs, add the following to your webpack config file:
-```
-node: {
-  fs: 'empty'
-}
-```
 ## How To Use And Supported Functions
 ### Making Calls
 #### General
@@ -136,13 +118,13 @@ In order to use TimecraftJS in a browser, you will need to load spice.js, timecr
 
 You can launch the sample hrml file provided with htis library by simply running the commands below in the base directory:
 
+```sh
 npm install gulp-cli -g
 npm install gulp@^3.9.1
 npm install browser-sync gulp --save-dev
 
 gulp serve
-
-
+```
 
 ###### `Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
 The `timecraft` object contains all of the wrapped functions. These are called in the form `timecraft.et2utc(43523178.23,"ISOC",4)`.
