@@ -52,6 +52,10 @@ const et = Timecraft.Spice.utc2et( utc );
 const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 ```
 
+### Loading a Metakernel
+
+TODO
+
 ### Using the Chronos Function
 
 TODO
@@ -209,6 +213,8 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 `Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
 
 ## Loading Kernels
+
+In order to load an read kernels the data must be loaded into the virtual Emscripten file system as a binary buffer. Files can be loaded an read into Spice immediately or files can be placed into the file system and read in later.r
 
 ### In the Browser
 
