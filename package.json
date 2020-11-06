@@ -2,10 +2,11 @@
   "name": "timecraftjs",
   "version": "1.0.1",
   "description": "Javascript time features based on SPICE",
-  "main": "timecraft.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "node postinstall.js"
+    "start": "static-server",
+    "lint": "eslint \"./src/{index,spice,timecraft}.js\""
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,9 @@
     "Mitchell Schrock<mitchell.schrock@jpl.nasa.gov>",
     "Arin Tahmasian <arin.tahmasian@jpl.nasa.gov>"
   ],
-  "license": "Apache 2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "static-server": "^2.2.1"
+  }
 }
