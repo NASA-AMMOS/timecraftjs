@@ -15,15 +15,15 @@ It is of extreme importance for different systems to understand time and calcula
 
 Some basic kernels are provided in this repo for performing time conversions. More kernels for other missions can be found [here](https://naif.jpl.nasa.gov/pub/naif/pds/data/).
 
-# Quick Start
+## Quick Start
 
-## Installation via NPM
+### Installation via NPM
 
 ```shell
 npm install timecraftjs
 ```
 
-## Time Conversion
+### Time Conversion
 
 ```js
 import * as TimeCraft from 'timecraftjs';
@@ -52,11 +52,11 @@ const et = Timecraft.Spice.utc2et( utc );
 const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 ```
 
-## Using the Chronos Function
+### Using the Chronos Function
 
 TODO
 
-## Running the Example
+### Running the Example
 
 1.  Clone the Repository
 
@@ -73,15 +73,13 @@ npm start
 
 This will start a static server so you can visit the example page at `localhost:9080/example/`.
 
-## Table Of Contents
+### Table Of Contents
 
-#### [What Is TimeCraftJS?](https://github.com/NASA-AMMOS/timecraftjs#what-is-timecraftjs-1)
-#### [Included Files](https://github.com/NASA-AMMOS/timecraftjs#included-files-1)
-#### [Downloading](https://github.com/NASA-AMMOS/timecraftjs#downloading-1)
-#### [How To Use And Supported Functions](https://github.com/NASA-AMMOS/timecraftjs#how-to-use-and-supported-functions-1)
-#### [Loading Kernels](https://github.com/NASA-AMMOS/timecraftjs#loading-kernels-1)
-#### [Recompiling cspice.js](https://github.com/NASA-AMMOS/timecraftjs#recompiling-cspicejs-1)
-#### [example-timecraftjs.html](https://github.com/NASA-AMMOS/timecraftjs#timecraftjs_examplehtml-1)
+#### [What Is TimeCraftJS?](#what-is-timecraftjs-1)
+#### [Included Files](#included-files-1)
+#### [API](#api-1)
+#### [Loading Kernels](#loading-kernels-1)
+#### [Recompiling cspice.js](#recompiling-cspicejs-1)
 
 ### What Is TimeCraftJS?
 
