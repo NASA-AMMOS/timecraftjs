@@ -54,7 +54,45 @@ const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 
 ### Loading a Metakernel
 
-TODO
+```js
+import * as TimeCraft from 'timecraftjs';
+
+// load the kernel contents
+const metaKernal = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
+
+// parse the kernel
+const {
+    KERNELS_TO_LOAD,
+    PATH_VALUES,
+    PATH_SYMBOLS,
+} = TimeCraft.parseMetaKernal( metaKernel );
+
+// process the paths to load
+const kernelPaths = KERNELS_TO_LOAD.map( path => {
+
+    let newPath = path;
+    for ( let i = 0; i < PATH_VALUES.length; i ++ ) {
+    
+        newPath = newPath.replaceAll( '$' + PATH_SYMBOLS[ i ], PATH_VALUES[ i ] );
+    
+    }
+    return newPath;
+
+} );
+
+// load the kernels in the meta kernel
+const kernelPromises = kernelPaths.map( p => {
+    
+    return fetch( p )
+        .then( res => res.buffer() )
+        .then( buffer => TimeCraft.loadKernelFromBuffer( buffer ) );
+ 
+} );
+
+await Promise.all( kernelPromises );
+
+// ready for time conversion!
+```
 
 ### Using the Chronos Function
 
