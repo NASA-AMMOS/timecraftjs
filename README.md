@@ -214,15 +214,30 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 
 ## Loading Kernels
 
-In order to load an read kernels the data must be loaded into the virtual Emscripten file system as a binary buffer. Files can be loaded an read into Spice immediately or files can be placed into the file system and read in later.
+In order to load an read kernels the data must be loaded into the virtual Emscripten file system as a binary buffer.
 
 ### In the Browser
 
-TODO
+Files must be downloaded asynchronously as array buffers before being loaded into the app.
+
+```js
+import * as TimeCraft from 'timecraftjs';
+
+const kernelBuffer = await fetch( '../path/to/kernel' ).then( res => res.buffer );
+TimeCraft.loadKernelFromBuffer( buffer );
+```
 
 ### In Node
 
-TODO
+In node files can be loaded from the filesystem directly.
+
+```js
+import fs from 'fs';
+import * as TimeCraft from 'timecraftjs';
+
+const kernelBuffer = fs.readFileSync( '../path/to/kernel' );
+TimeCraft.loadKernelFromBuffer( buffer );
+```
 
 ## Recompiling cspice.js (JPL Internal only)
 `cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on July 25, 2017.
