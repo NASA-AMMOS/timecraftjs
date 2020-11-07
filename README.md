@@ -70,14 +70,14 @@ const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
 import * as TimeCraft from 'timecraftjs';
 
 // load the kernel contents
-const metaKernal = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
+const metaKernel = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
 
 // parse the kernel
 const {
     KERNELS_TO_LOAD,
     PATH_VALUES,
     PATH_SYMBOLS,
-} = TimeCraft.parseMetaKernal( metaKernel );
+} = TimeCraft.parseMetaKernel( metaKernel );
 
 // process the paths to load
 const kernelPaths = KERNELS_TO_LOAD.map( path => {
@@ -170,7 +170,7 @@ This file handles detecting if running in Node or a browser, making requests for
 loadKernel( buffer : ArrayBuffer | Uint8Array, key : String = null ) : void
 ```
 
-Load the provided buffer into Spice as a kernel. The provided key can be used to unload the kernel using [unloadKernel](#unloadKernel). Throws an error if the key has already been used.
+Load the provided buffer into Spice as a kernel. The provided key can be used to unload the kernel using [unloadKernel](#unloadKernel). Throws an error if the key has already been used. Details of kernel management can be found in the [Kernel Management](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/kernel.html#Section%205%20--%20Kernel%20Management) section of the SPICE docs.
 
 #### unloadKernel
 
@@ -179,6 +179,14 @@ unloadKernel( key : String ) : void
 ```
 
 Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
+
+#### parseMetakernel
+
+```js
+parseMetakernel( contents : String ) : Object
+```
+
+Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file. This function can be used to preparse meta kernels and load the kernels referenced in the file.
 
 #### chronos
 
