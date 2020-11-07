@@ -53,11 +53,11 @@ export function chronos(inptim, cmdlin) {
         [cmdlin, intptr, inptim, outtim_ptr, cmdlin.length, inptim.length, 256],
     );
 
-    const ret = Module.Pointer_stringify(outtim_ptr);
+    const ret = Module.Pointer_stringify(outtim_ptr, 256);
     Module._free(outtim_ptr);
     Module._free(intptr);
 
-    return ret;
+    return ret.trim();
 }
 
 function processTokenValue(value) {

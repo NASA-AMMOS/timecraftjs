@@ -31,7 +31,7 @@ The compiled emscripten blob includes `require( 'fs' )` which can cause Webpack 
 node: {
 
     fs: 'empty'
-    
+
 }
 ```
 
@@ -42,7 +42,7 @@ import * as TimeCraft from 'timecraftjs';
 
 // Load the kernels
 const kernelBuffers = await Promise.all( [
-    
+
     fetch( '../kernels/lsk/naif0012.tls' ).then( res => res.buffer() ),
     fetch( '../kernels/spk/de425s.bsp' ).then( res => res.buffer() ),
     fetch( '../kernels/pck/pck00008.tpc' ).then( res => res.buffer() ),
@@ -84,9 +84,9 @@ const kernelPaths = KERNELS_TO_LOAD.map( path => {
 
     let newPath = path;
     for ( let i = 0; i < PATH_VALUES.length; i ++ ) {
-    
+
         newPath = newPath.replaceAll( '$' + PATH_SYMBOLS[ i ], PATH_VALUES[ i ] );
-    
+
     }
     return newPath;
 
@@ -94,11 +94,11 @@ const kernelPaths = KERNELS_TO_LOAD.map( path => {
 
 // load the kernels in the meta kernel
 const kernelPromises = kernelPaths.map( p => {
-    
+
     return fetch( p )
         .then( res => res.buffer() )
         .then( buffer => TimeCraft.loadKernel( buffer ) );
- 
+
 } );
 
 await Promise.all( kernelPromises );
@@ -109,7 +109,7 @@ await Promise.all( kernelPromises );
 ### Using the Chronos Function
 
 ```js
-Timecraft.chronos( '617885388.6646054', '-from et -to utc -fromtype SECONDS');
+Timecraft.chronos( '617885388.6646054', '-from et -to utc -fromtype SECONDS' );
 ```
 
 ### Running the Example
