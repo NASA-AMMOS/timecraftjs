@@ -14,7 +14,10 @@ export function loadKernel(buffer, key = null) {
     
     const path = `_buffer_${ bufferFileCount }.bin`;
     bufferFileCount++;
-    fileMap[key] = path;
+    
+    if (key !== null) {
+        fileMap[key] = path;
+    }
 
     FS.writeFile(path, buffer, { encoding: 'binary' });
     Spice.furnsh(path);
