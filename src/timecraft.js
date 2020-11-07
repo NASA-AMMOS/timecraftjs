@@ -74,9 +74,7 @@ export function parseMetakernel(txt) {
     // find the data section
     const matches = txt.match(/\\begindata([\w\W]+?)\\/);
     if (!matches) {
-
         return null;
-
     }
 
     // remove all newlines per variable and array values
@@ -124,4 +122,6 @@ export function parseMetakernel(txt) {
             result[name] = processTokenValue(token);
         }
     });
+
+    return result;
 }
