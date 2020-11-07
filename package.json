@@ -2,9 +2,7 @@
   "name": "timecraftjs",
   "version": "1.0.1",
   "description": "Javascript time features based on SPICE",
-  "main": "src/index.js",
   "module": "src/index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "static-server",
