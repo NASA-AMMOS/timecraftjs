@@ -39,7 +39,7 @@ export function unloadKernel(key) {
 
 export function chronos(inptim, cmdlin) {
     const outtim_ptr = Module._malloc(256);
-    const intptr = Module._malloc(8);
+    const intptr = Module._malloc(4);
 
     Module.setValue(intptr, 1, 'i32');
     Module.ccall(
@@ -51,6 +51,7 @@ export function chronos(inptim, cmdlin) {
 
     const ret = Module.Pointer_stringify(outtim_ptr);
     Module._free(outtim_ptr);
+    Module._free(intptr);
 
     return ret;
 }
