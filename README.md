@@ -23,6 +23,18 @@ Some basic kernels are provided in this repo for performing time conversions. Mo
 npm install timecraftjs
 ```
 
+### Use with Webpack
+
+The compiled emscripten blob includes `require( 'fs' )` which can cause Webpack to fail to compile for the web. In this case add the following options to the root of your Webpack config:
+
+```js
+node: {
+
+    fs: 'empty'
+    
+}
+```
+
 ### Time Conversion
 
 ```js
@@ -96,7 +108,9 @@ await Promise.all( kernelPromises );
 
 ### Using the Chronos Function
 
-TODO
+```js
+Timecraft.chronos( '617885388.6646054', '-from et -to utc -fromtype SECONDS');
+```
 
 ### Running the Example
 
@@ -183,7 +197,7 @@ unloadKernel( path : String ) : void
 #### chronos
 
 ```js
-chronos( inptim : Number, cmdlin : String ) : String
+chronos( inptim : String, cmdlin : String ) : String
 ```
 
 Wrapper for the CSpice command line utility that calls the `cronos_` function internally. `inptim` is the input time to convert while `cmdlin` is the list of command line arguments as a string. See the [chronos](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) docs for more information.
