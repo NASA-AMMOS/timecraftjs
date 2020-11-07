@@ -164,35 +164,21 @@ This file handles detecting if running in Node or a browser, making requests for
 
 ### Functions
 
-#### prepareFileFromBuffer
-
-```js
-prepareFileFromBuffer( path : String, buffer : ArrayBuffer | Uint8Array ) : void
-```
-
-#### removeFile
-
-```js
-removeFile( path : String ) : void
-```
-
 #### loadKernel
 
 ```js
-loadKernel( path : String ) : void
+loadKernel( buffer : ArrayBuffer | Uint8Array, key : String = null ) : void
 ```
 
-#### loadKernelFromBuffer
-
-```js
-loadKernelFromBuffer( buffer : ArrayBuffer | Uint8Array ) : void
-```
+Load the provided buffer into Spice as a kernel. The provided key can be used to unload the kernel using [unloadKernel](#unloadKernel). Throws an error if the key has already been used.
 
 #### unloadKernel
 
 ```js
-unloadKernel( path : String ) : void
+unloadKernel( key : String ) : void
 ```
+
+Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
 
 #### chronos
 
