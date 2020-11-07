@@ -11,10 +11,14 @@ export function loadKernel(buffer, key = null) {
     if (key !== null && key in fileMap) {
         throw new Error();
     }
-    
+
+    if (buffer instanceof ArrayBuffer) {
+        buffer = new Uint8Array(buffer);
+    }
+
     const path = `_buffer_${ bufferFileCount }.bin`;
     bufferFileCount++;
-    
+
     if (key !== null) {
         fileMap[key] = path;
     }
