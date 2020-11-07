@@ -52,7 +52,7 @@ const kernelBuffers = await Promise.all( [
 // Load the kernels into Spice
 for ( let i = 0; i < kernelBuffers.length; i ++ ) {
 
-    TimeCraft.loadKernelFromBuffer( kernelBuffers[ i ] );
+    TimeCraft.loadKernel( kernelBuffers[ i ] );
 
 }
 
@@ -97,7 +97,7 @@ const kernelPromises = kernelPaths.map( p => {
     
     return fetch( p )
         .then( res => res.buffer() )
-        .then( buffer => TimeCraft.loadKernelFromBuffer( buffer ) );
+        .then( buffer => TimeCraft.loadKernel( buffer ) );
  
 } );
 
