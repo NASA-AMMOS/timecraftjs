@@ -14,10 +14,7 @@ export {
     Spice,
     CSpice,
 
-    prepareFileFromBuffer,
-    removeFile,
     loadKernel,
-    loadKernelFromBuffer,
     unloadKernel,
     chronos,
     parseMetakernel,   
