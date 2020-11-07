@@ -24,7 +24,7 @@ window.Timecraft = Timecraft;
 
     buffers.forEach( buffer => {
 
-        Timecraft.loadKernelFromBuffer( buffer );
+        Timecraft.loadKernel( buffer );
 
     } );
 
