@@ -1,61 +1,41 @@
 import Module from './cspice.js';
 import * as Spice from './spice.js';
 
-let bufferFileCount = 0;
-
 const FS = Module.get_fs();
 
-function mkdirRecursive(parts) {
-    const tempParts = parts.slice();
+const fileMap = {};
+let bufferFileCount = 0;
 
-    let currPath = '';
-    while (tempParts.length) {
-        if (currPath !== '') {
-            currPath += '/';
-        }
-        currPath += tempParts.shift();
-        try {
-            FS.mkdir(currPath);
-        } catch (e) {
-            // do nothing
-        }
+// loading kernels
+export function loadKernel(buffer, key = null) {
+    if (key !== null && key in fileMap) {
+        throw new Error();
     }
-}
 
-// file system manipulation
-// https://emscripten.org/docs/api_reference/Filesystem-API.html
-export function prepareFileFromBuffer(path, buffer) {
     if (buffer instanceof ArrayBuffer) {
         buffer = new Uint8Array(buffer);
     }
 
-    const parts = path.split(/[\\/]/g);
-    parts.pop();
-    mkdirRecursive(parts);
-
-    FS.writeFile(path, buffer, { encoding: 'binary' });
-}
-
-export function removeFile(path) {
-    FS.unlink(path);
-}
-
-// loading kernels
-export function loadKernel(path) {
-    Spice.furnsh(path);
-}
-
-export function loadKernelFromBuffer(buffer) {
-    const path = `__buffer_files__/buffer_${ bufferFileCount }.bin`;
+    const path = `_buffer_${ bufferFileCount }.bin`;
     bufferFileCount++;
 
-    prepareFileFromBuffer(path, buffer);
-    loadKernel(path);
+    if (key !== null) {
+        fileMap[key] = path;
+    }
+
+    FS.writeFile(path, buffer, { encoding: 'binary' });
+    Spice.furnsh(path);
+    FS.unlink(path);
 }
 
 // unloading kernel
 export function unloadKernel(key) {
-    Spice.unload(key);
+    if (!(key in fileMap)) {
+        throw new Error();
+    }
+
+    Spice.unload(fileMap[key]);
+    delete fileMap[key];
 }
 
 // Chronos CLI
@@ -73,11 +53,11 @@ export function chronos(inptim, cmdlin) {
         [cmdlin, intptr, inptim, outtim_ptr, cmdlin.length, inptim.length, 256],
     );
 
-    const ret = Module.Pointer_stringify(outtim_ptr);
+    const ret = Module.Pointer_stringify(outtim_ptr, 256);
     Module._free(outtim_ptr);
     Module._free(intptr);
 
-    return ret;
+    return ret.trim();
 }
 
 function processTokenValue(value) {
@@ -94,9 +74,7 @@ export function parseMetakernel(txt) {
     // find the data section
     const matches = txt.match(/\\begindata([\w\W]+?)\\/);
     if (!matches) {
-
         return null;
-
     }
 
     // remove all newlines per variable and array values
@@ -144,4 +122,6 @@ export function parseMetakernel(txt) {
             result[name] = processTokenValue(token);
         }
     });
+
+    return result;
 }

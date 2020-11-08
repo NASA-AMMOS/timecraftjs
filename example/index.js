@@ -1,5 +1,5 @@
-import * as Timecraft from '../src/index.js';
-window.Timecraft = Timecraft;
+import * as TimeCraft from '../src/index.js';
+window.TimeCraft = TimeCraft;
 
 ( async function() {
 
@@ -24,7 +24,7 @@ window.Timecraft = Timecraft;
 
     buffers.forEach( buffer => {
 
-        Timecraft.loadKernelFromBuffer( buffer );
+        TimeCraft.loadKernel( buffer );
 
     } );
 
@@ -40,15 +40,15 @@ window.Timecraft = Timecraft;
         let utc = new Date().toISOString();
         utc = utc.slice(0, utc.length - 1);
 
-        const et = Timecraft.Spice.utc2et(utc);
+        const et = TimeCraft.Spice.utc2et(utc);
 
-        const lst = Timecraft.Spice.et2lst(et, 499, 0, 'planetocentric');
+        const lst = TimeCraft.Spice.et2lst(et, 499, 0, 'planetocentric');
 
-        const lmst = Timecraft.Spice.sce2s(-76900, et);
+        const lmst = TimeCraft.Spice.sce2s(-76900, et);
 
-        const sclk = Timecraft.Spice.sce2c(-76900, et);
+        const sclk = TimeCraft.Spice.sce2c(-76900, et);
 
-        const sunPos = Timecraft.Spice.spkpos('SUN', et, 'MSL_TOPO', 'LT+S', '-76').ptarg;
+        const sunPos = TimeCraft.Spice.spkpos('SUN', et, 'MSL_TOPO', 'LT+S', '-76').ptarg;
         let sunDir = sunPos.map(e => e / sunPos[0]);
         let sunLen = Math.sqrt(sunDir[0]**2 + sunDir[1]**2 + sunDir[2]**2);
         sunDir[0] /= sunLen;
