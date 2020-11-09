@@ -6,6 +6,5 @@ export default {
         dir: path.resolve(__dirname, 'cjs'),
         format: 'commonjs',
         preserveModules: true,
-        strict: false,
     },
 };
