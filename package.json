@@ -1,36 +1,36 @@
 {
-  "name": "timecraftjs",
-  "version": "1.0.1",
-  "description": "Javascript time features based on SPICE",
-  "module": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "static-server",
-    "lint": "eslint \"./src/{index,spice,timecraft}.js\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/NASA-AMMOS/timecraftjs.git"
-  },
-  "keywords": [
-    "time",
-    "conversion",
-    "ltst",
-    "lst",
-    "spice",
-    "timecraft",
-    "timecraftjs",
-    "cspice"
-  ],
-  "author": "John Thomason",
-  "contributors": [
-    "Hector R. Acosta <hector.r.acosta@jpl.nasa.gov>",
-    "Mitchell Schrock<mitchell.schrock@jpl.nasa.gov>",
-    "Arin Tahmasian <arin.tahmasian@jpl.nasa.gov>"
-  ],
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "eslint": "^7.12.1",
-    "static-server": "^2.2.1"
-  }
+    "name": "timecraftjs",
+    "version": "1.0.1",
+    "description": "Time conversion using NAIF CSPICE Toolkit in JavaScript via Emscripten.",
+    "module": "src/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "static-server",
+        "lint": "eslint \"./src/{index,spice,timecraft}.js\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/NASA-AMMOS/timecraftjs.git"
+    },
+    "keywords": [
+        "time",
+        "conversion",
+        "ltst",
+        "lst",
+        "spice",
+        "timecraft",
+        "timecraftjs",
+        "cspice"
+    ],
+    "author": "NASA-AMMOS",
+    "contributors": [
+        "Arin Tahmasian <arin.tahmasian@jpl.nasa.gov>",
+        "Garrett Johnson <garrett.kjohnson@gmail.com>",
+        "Chris Camargo <Christopher.A.Camargo@jpl.nasa.gov>"
+    ],
+    "license": "Apache-2.0",
+    "devDependencies": {
+        "eslint": "^7.12.1",
+        "static-server": "^2.2.1"
+    }
 }
