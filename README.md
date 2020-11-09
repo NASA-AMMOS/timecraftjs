@@ -1,17 +1,14 @@
-
-![TimeCraftJS Logo](./images/timecraftLogo.png)
-
-Copyright 2019, by the California Institute of Technology.
-ALL RIGHTS RESERVED.
-
-United States Government Sponsorship acknowledged. Any commercial use must be negotiated with the Office of Technology Transfer at the California Institute of Technology.
-This software may be subject to U.S. export control laws. By accepting this software, the user agrees to comply with all applicable U.S. export laws and regulations. User has the responsibility to obtain export licenses, or other export authority as may be required before exporting such information to foreign countries or providing access to foreign persons.
+<p align="center">
+  <img
+    alt="TimeCraftJS"
+    src="./images/logo.png"
+    width="100"
+  />
+</p>
 
 # TimeCraftJS
 
-TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/).
-
-It is of extreme importance for different systems to understand time and calculate operations consistently. TimeCraftJS exposes functions to execute operations to convert SCET, ET, SCT, furnish Kernels, among others, in the client side. This avoid unnecessary trips to the backend and makes allows for important time operations to happen if network connectivity is not immediately available.
+TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). It exposes functions to execute operations to convert [SCET](https://en.wikipedia.org/wiki/Spacecraft_Event_Time), ET, SCT, furnish Kernels, among others, on the client side. This avoid unnecessary trips to the backend and allows for important time operations to happen if network connectivity is not immediately available.
 
 Some basic kernels are provided in this repo for performing time conversions. More kernels for other missions can be found [here](https://naif.jpl.nasa.gov/pub/naif/pds/data/).
 
@@ -296,3 +293,10 @@ In order to recompile cspice.js, follow these steps:
 * Fourth, run `./install.sh`. This will download and set up the required Emscripten files from archived version 1.34.1 and will take some time. We are using this version as the most recent version has problems in the final step. Make certain your have [everything required for Emscripten to run](https://kripken.github.io/emscripten-site/docs/building_from_source/toolchain_what_is_needed.html).
 * Fifth, run `./cspice.sh`. This will move the required chronos files to be included in cspice, compile it, and then port it to a new cspice.js file.
 * Finally, replace the cspice.js in TimeCraftJS with the newly compiled one.
+
+## License
+
+Copyright 2020, by the California Institute of Technology.  
+ALL RIGHTS RESERVED.  
+United States Government Sponsorship acknowledged. Any commercial use must be negotiated with the Office of Technology Transfer at the California Institute of Technology.
+This software may be subject to U.S. export control laws. By accepting this software, the user agrees to comply with all applicable U.S. export laws and regulations. User has the responsibility to obtain export licenses, or other export authority as may be required before exporting such information to foreign countries or providing access to foreign persons.
