@@ -139,7 +139,7 @@ export function getMetakernelPaths(txt) {
         kernelPaths = KERNELS_TO_LOAD.map(path => {
             let newPath = path;
             for (let i = 0; i < PATH_VALUES.length; i++) {
-                newPath = newPath.replace(new RegExp('$' + PATH_SYMBOLS[i], 'g'), PATH_VALUES[i]);
+                newPath = newPath.replace(new RegExp('\\$' + PATH_SYMBOLS[i], 'g'), PATH_VALUES[i]);
             }
             return newPath;
         });

@@ -72,19 +72,6 @@ const metaKernel = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then
 // parse the kernel
 const kernelPaths = TimeCraft.getMetakernelPaths( metaKernel );
 
-// process the paths to load
-const kernelPaths = KERNELS_TO_LOAD.map( path => {
-
-    let newPath = path;
-    for ( let i = 0; i < PATH_VALUES.length; i ++ ) {
-
-        newPath = newPath.replaceAll( '$' + PATH_SYMBOLS[ i ], PATH_VALUES[ i ] );
-
-    }
-    return newPath;
-
-} );
-
 // load the kernels in the meta kernel
 const kernelPromises = kernelPaths.map( p => {
 
