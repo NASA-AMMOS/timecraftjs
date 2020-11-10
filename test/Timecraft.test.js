@@ -104,7 +104,7 @@ describe('TimeCraft', () => {
             expect(TimeCraft.Spice.et2utc(510593482.204611, 'ISOC', 3)).toEqual('2016-03-07T03:30:14.019');
 
             // utc 2 et
-            expect(TimeCraft.Spice.utc2et('2016-03-07T03:30:14.019').toEqual(510593482.204611);
+            expect(TimeCraft.Spice.utc2et('2016-03-07T03:30:14.019')).toEqual(510593482.204611);
 
             // et 2 lmst
             expect(TimeCraft.Spice.sce2s(-76900, 510593482.204611)).toEqual('1/01274:12:44:53:49604');
@@ -124,6 +124,7 @@ describe('TimeCraft', () => {
 
         it('should perform chronos conversions.', () => {
             expect(TimeCraft.chronos('510593482.204611', '-from et -to utc -fromtype SECONDS')).toEqual('2016-03-07 03:30:14.019');
+            expect(TimeCraft.chronos('510593482.204611', '-from et -to sclk -fromtype SECONDS -sc -76')).toEqual('1/0510592221-24314');
         });
 
         afterAll(() => {
