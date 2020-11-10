@@ -29,7 +29,6 @@ function loadKernel(buffer, key = null) {
 
     FS.writeFile(path, buffer, { encoding: 'binary' });
     spice.furnsh(path);
-    FS.unlink(path);
 }
 
 // unloading kernel
@@ -39,6 +38,7 @@ function unloadKernel(key) {
     }
 
     spice.unload(fileMap[key]);
+    FS.unlink(fileMap[key]);
     delete fileMap[key];
 }
 
