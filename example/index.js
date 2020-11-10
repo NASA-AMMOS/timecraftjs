@@ -9,7 +9,7 @@ window.TimeCraft = TimeCraft;
         '../kernels/lsk/naif0012.tls',
         '../kernels/spk/de425s.bsp',
 
-        // '../kernels/sclk/msl_76_sclkscet_00016.tsc',
+        '../kernels/sclk/msl_76_sclkscet_00016.tsc',
         '../kernels/sclk/msl_lmst_ops120808_v1.tsc',
 
         '../kernels/pck/pck00008.tpc',
