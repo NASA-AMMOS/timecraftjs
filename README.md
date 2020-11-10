@@ -70,11 +70,7 @@ import * as TimeCraft from 'timecraftjs';
 const metaKernel = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
 
 // parse the kernel
-const {
-    KERNELS_TO_LOAD,
-    PATH_VALUES,
-    PATH_SYMBOLS,
-} = TimeCraft.parseMetaKernel( metaKernel );
+const kernelPaths = TimeCraft.getMetakernelPaths( metaKernel );
 
 // process the paths to load
 const kernelPaths = KERNELS_TO_LOAD.map( path => {
