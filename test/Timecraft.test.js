@@ -34,6 +34,20 @@ describe('TimeCraft', () => {
                 LANDING_TIME: '2012-08-06T05:17:57',
                 SPACECRAFT_ID: -76,
             });
+
+            const paths = TimeCraft.getMetakernelPaths(contents);
+            expect(paths).toEqual([
+                './data/lsk/naif0012.tls',
+                './data/sclk/msl_76_sclkscet_00016.tsc',
+                './data/sclk/msl_lmst_ops120808_v1.tsc',
+                './data/pck/pck00008.tpc',
+                './data/spk/de425s.bsp',
+                './data/spk/msl_cruise_v1.bsp',
+                './data/spk/msl_edl_v01.bsp',
+                './data/spk/msl_ls_ops120808_iau2000_v1.bsp',
+                './data/spk/msl_atls_ops120808_v1.bsp',
+                './data/fk/msl_v08.tf'
+            ]);
         });
     });
 
