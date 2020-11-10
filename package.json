@@ -2,6 +2,7 @@
     "name": "timecraftjs",
     "version": "1.0.1",
     "description": "Time conversion using NAIF CSPICE Toolkit in JavaScript via Emscripten.",
+    "main": "cjs/index.js",
     "module": "src/index.js",
     "scripts": {
         "start": "static-server",
@@ -9,6 +10,10 @@
         "test": "jest",
         "lint": "eslint \"./src/{index,spice,timecraft}.js\" \"./test/**.js\""
     },
+    "files": [
+        "src/*",
+        "cjs/*"
+    ],
     "repository": {
         "type": "git",
         "url": "git://github.com/NASA-AMMOS/timecraftjs.git"
