@@ -83,6 +83,7 @@ describe('TimeCraft', () => {
                 '../kernels/lsk/naif0012.tls',
                 '../kernels/spk/de425s.bsp',
                 '../kernels/sclk/msl_lmst_ops120808_v1.tsc',
+                '../kernels/sclk/msl_76_sclkscet_00016.tsc',
                 '../kernels/pck/pck00008.tpc',
                 '../kernels/spk/msl_ls_ops120808_iau2000_v1.bsp',
                 '../kernels/spk/msl_atls_ops120808_v1.bsp',
@@ -104,7 +105,7 @@ describe('TimeCraft', () => {
             expect(TimeCraft.Spice.et2utc(510593482.204611, 'ISOC', 3)).toEqual('2016-03-07T03:30:14.019');
 
             // utc 2 et
-            expect(TimeCraft.Spice.utc2et('2016-03-07T03:30:14.019')).toEqual(510593482.204611);
+            expect(parseFloat(TimeCraft.Spice.utc2et('2016-03-07T03:30:14.019').toFixed(3))).toEqual(510593482.204);
 
             // et 2 lmst
             expect(TimeCraft.Spice.sce2s(-76900, 510593482.204611)).toEqual('1/01274:12:44:53:49604');
