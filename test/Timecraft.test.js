@@ -100,8 +100,17 @@ describe('TimeCraft', () => {
             expect(TimeCraft.Spice.bodn2c('MARS')).toEqual({ found: 1, code: 499 });
             expect(TimeCraft.Spice.et2utc(43523178.23, 'ISOC', 4)).toEqual('2001-05-19T05:45:14.0448');
 
+            // et 2 utc
             expect(TimeCraft.Spice.et2utc(510593482.204611, 'ISOC', 3)).toEqual('2016-03-07T03:30:14.019');
+
+            // utc 2 et
+            expect(TimeCraft.Spice.utc2et('2016-03-07T03:30:14.019').toEqual(510593482.204611);
+
+            // et 2 lmst
             expect(TimeCraft.Spice.sce2s(-76900, 510593482.204611)).toEqual('1/01274:12:44:53:49604');
+
+            // et 2 sclk
+            expect(TimeCraft.Spice.sce2s(-76, 510593482.204611)).toEqual('1/0510592221-24314');
 
             const sunPos = TimeCraft.Spice.spkpos('SUN', 510593482.204611, 'MSL_LOCAL_LEVEL', 'LT+S', 'MARS').ptarg;
             const maxVal = Math.max(...sunPos.map(v => Math.abs(v)));
