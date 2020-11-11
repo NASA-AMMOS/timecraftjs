@@ -87,7 +87,7 @@ export function parseMetakernel(txt) {
     const lines = data.split(/[\n\r]/g ).filter( l => !!l.trim());
 
     // parse the variables
-    const result = {};
+    const fields = {};
     lines.forEach(line => {
         // get the variable name and value
         const split = line.split(/=/);
@@ -117,26 +117,22 @@ export function parseMetakernel(txt) {
                 }
             });
 
-            result[name] = fixedTokens;
+            fields[name] = fixedTokens;
         } else {
-            result[name] = processTokenValue(token);
+            fields[name] = processTokenValue(token);
         }
     });
 
-    return result;
-}
-
-// Returns a list of kernels referenced by the given metakernel
-export function getMetakernelPaths(txt) {
+    // preprocess the paths to replace the symbols
     const {
         KERNELS_TO_LOAD,
         PATH_VALUES,
         PATH_SYMBOLS,
-    } = parseMetakernel(txt);
+    } = fields;
 
-    let kernelPaths;
+    let paths;
     if (PATH_VALUES && PATH_VALUES && KERNELS_TO_LOAD) {
-        kernelPaths = KERNELS_TO_LOAD.map(path => {
+        paths = KERNELS_TO_LOAD.map(path => {
             let newPath = path;
             for (let i = 0; i < PATH_VALUES.length; i++) {
                 newPath = newPath.replace(new RegExp('\\$' + PATH_SYMBOLS[i], 'g'), PATH_VALUES[i]);
@@ -144,7 +140,9 @@ export function getMetakernelPaths(txt) {
             return newPath;
         });
     } else {
-        kernelPaths = KERNELS_TO_LOAD;
+        paths = KERNELS_TO_LOAD || null;
     }
-    return kernelPaths;
+
+    return { paths, fields };
 }
+

@@ -70,7 +70,7 @@ import * as TimeCraft from 'timecraftjs';
 const metaKernel = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
 
 // parse the kernel
-const kernelPaths = TimeCraft.getMetakernelPaths( metaKernel );
+const kernelPaths = TimeCraft.parseMetakernel( metaKernel ).paths;
 
 // load the kernels in the meta kernel
 const kernelPromises = kernelPaths.map( p => {
@@ -163,18 +163,10 @@ Unload the kernel that was loaded with the given key. Throws an error if a kerne
 #### parseMetakernel
 
 ```js
-parseMetakernel( contents : String ) : Object
+parseMetakernel( contents : String ) : { fields: Object, paths: Array<String> }
 ```
 
-Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file.
-
-#### getMetakernelPaths
-
-```js
-getMetakernelPaths( contents : String ) : Array<String>
-```
-
-Parses the contents of a metakernel `.tm` file and returns all the resolved kernel paths referenced by the file. This function can be used to preparse meta kernels and load the kernels referenced in the file.
+Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file as `fields` and all preprocessed referenced metakernal paths as `paths`.
 
 #### chronos
 
