@@ -118,4 +118,5 @@ dist
 # OS Directories
 .DS_Store
 
+cjs/
 example/bundle
