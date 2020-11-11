@@ -315,7 +315,7 @@ export function deltet(epoch, eptype) {
 /** @memberof SPICE
  * @todo Document and test this!
  */
-export function erract(op, action) {
+export function erract(op, action = '') {
     const action_ptr = Module._malloc(100);
     Module.stringToUTF8(action, action_ptr, 100);
 
@@ -331,7 +331,7 @@ export function erract(op, action) {
     return result;
 }
 
-export function errprt(op, list) {
+export function errprt(op, list = '') {
     const list_ptr = Module._malloc(100);
     Module.stringToUTF8(list, list_ptr, 100);
 

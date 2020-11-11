@@ -113,9 +113,9 @@ describe('TimeCraft', () => {
             expect(TimeCraft.Spice.erract('GET')).toEqual('IGNORE');
 
             expect(TimeCraft.Spice.errprt('GET')).toEqual('SHORT, LONG, EXPLAIN, TRACEBACK, DEFAULT');
-            TimeCraft.Spice.erract('SET', 'NONE');
+            TimeCraft.Spice.errprt('SET', 'NONE');
             expect(TimeCraft.Spice.errprt('GET')).toEqual('');
-            TimeCraft.Spice.erract('SET', 'ALL');
+            TimeCraft.Spice.errprt('SET', 'ALL');
             expect(TimeCraft.Spice.errprt('GET')).toEqual('SHORT, LONG, EXPLAIN, TRACEBACK');
         });
 
