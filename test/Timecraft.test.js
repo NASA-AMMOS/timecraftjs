@@ -113,6 +113,15 @@ describe('TimeCraft', () => {
             expect(TimeCraft.Spice.bodn2c('MARS')).toEqual({ found: 1, code: 499 });
             expect(TimeCraft.Spice.et2utc(43523178.23, 'ISOC', 4)).toEqual('2001-05-19T05:45:14.0448');
 
+            // et 2 lst
+            expect(TimeCraft.Spice.et2lst(510593482.204611, 499, 0, 'planetocentric')).toEqual({
+                hr: 3,
+                mn: 58,
+                sc: 32,
+                time: '03:58:32',
+                ampm: '03:58:32 A.M.',
+            });
+
             // et 2 utc
             expect(TimeCraft.Spice.et2utc(510593482.204611, 'ISOC', 3)).toEqual('2016-03-07T03:30:14.019');
 
