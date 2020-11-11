@@ -323,7 +323,7 @@ export function errprt(op, list) {
         [op, 100, list_ptr],
     );
 
-    const result = Module.UTF8ToString(list_ptr, 200);
+    const result = Module.UTF8ToString(list_ptr, 100);
     Module._free(list_ptr);
     return result;
 }
