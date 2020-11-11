@@ -5,7 +5,6 @@ import {
     unloadKernel,
     chronos,
     parseMetakernel,
-    getMetakernelPaths,
 } from './timecraft.js';
 
 export {
@@ -16,5 +15,4 @@ export {
     unloadKernel,
     chronos,
     parseMetakernel,
-    getMetakernelPaths,
 };
