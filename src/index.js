@@ -14,5 +14,5 @@ export {
     loadKernel,
     unloadKernel,
     chronos,
-    parseMetakernel,   
+    parseMetakernel,
 };

@@ -25,7 +25,6 @@ export function loadKernel(buffer, key = null) {
 
     FS.writeFile(path, buffer, { encoding: 'binary' });
     Spice.furnsh(path);
-    FS.unlink(path);
 }
 
 // unloading kernel
@@ -35,6 +34,7 @@ export function unloadKernel(key) {
     }
 
     Spice.unload(fileMap[key]);
+    FS.unlink(fileMap[key]);
     delete fileMap[key];
 }
 
@@ -87,7 +87,7 @@ export function parseMetakernel(txt) {
     const lines = data.split(/[\n\r]/g ).filter( l => !!l.trim());
 
     // parse the variables
-    const result = {};
+    const fields = {};
     lines.forEach(line => {
         // get the variable name and value
         const split = line.split(/=/);
@@ -117,11 +117,32 @@ export function parseMetakernel(txt) {
                 }
             });
 
-            result[name] = fixedTokens;
+            fields[name] = fixedTokens;
         } else {
-            result[name] = processTokenValue(token);
+            fields[name] = processTokenValue(token);
         }
     });
 
-    return result;
+    // preprocess the paths to replace the symbols
+    const {
+        KERNELS_TO_LOAD,
+        PATH_VALUES,
+        PATH_SYMBOLS,
+    } = fields;
+
+    let paths;
+    if (PATH_VALUES && PATH_VALUES && KERNELS_TO_LOAD) {
+        paths = KERNELS_TO_LOAD.map(path => {
+            let newPath = path;
+            for (let i = 0; i < PATH_VALUES.length; i++) {
+                newPath = newPath.replace(new RegExp('\\$' + PATH_SYMBOLS[i], 'g'), PATH_VALUES[i]);
+            }
+            return newPath;
+        });
+    } else {
+        paths = KERNELS_TO_LOAD || null;
+    }
+
+    return { paths, fields };
 }
+
