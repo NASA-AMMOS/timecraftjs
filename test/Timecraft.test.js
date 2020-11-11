@@ -97,6 +97,7 @@ describe('TimeCraft', () => {
                 '../kernels/lsk/naif0012.tls',
                 '../kernels/spk/de425s.bsp',
                 '../kernels/sclk/msl_lmst_ops120808_v1.tsc',
+                '../kernels/sclk/msl_76_sclkscet_00016.tsc',
                 '../kernels/pck/pck00008.tpc',
                 '../kernels/spk/msl_ls_ops120808_iau2000_v1.bsp',
                 '../kernels/spk/msl_atls_ops120808_v1.bsp',
@@ -113,6 +114,32 @@ describe('TimeCraft', () => {
             expect(TimeCraft.Spice.bodc2n(499)).toEqual({ found: 1, name: 'MARS' });
             expect(TimeCraft.Spice.bodn2c('MARS')).toEqual({ found: 1, code: 499 });
             expect(TimeCraft.Spice.et2utc(43523178.23, 'ISOC', 4)).toEqual('2001-05-19T05:45:14.0448');
+
+            // et 2 utc
+            expect(TimeCraft.Spice.et2utc(510593482.204611, 'ISOC', 3)).toEqual('2016-03-07T03:30:14.019');
+
+            // utc 2 et
+            expect(parseFloat(TimeCraft.Spice.utc2et('2016-03-07T03:30:14.019').toFixed(3))).toEqual(510593482.204);
+
+            // et 2 lmst
+            expect(TimeCraft.Spice.sce2s(-76900, 510593482.204611)).toEqual('1/01274:12:44:53:49604');
+
+            // et 2 sclk
+            expect(TimeCraft.Spice.sce2s(-76, 510593482.204611)).toEqual('1/0510592221-24314');
+
+            const sunPos = TimeCraft.Spice.spkpos('SUN', 510593482.204611, 'MSL_LOCAL_LEVEL', 'LT+S', 'MARS').ptarg;
+            const maxVal = Math.max(...sunPos.map(v => Math.abs(v)));
+            let sunDir = sunPos.map(v => v / maxVal);
+
+            const dirLen = Math.sqrt(sunDir[0] ** 2 + sunDir[1] ** 2 + sunDir[2] ** 2);
+            sunDir = sunDir.map(v => v / dirLen);
+
+            expect(sunDir.map(v => parseFloat(v.toFixed(4)))).toEqual([0.4431, -0.2725, -0.8540]);
+        });
+
+        it('should perform chronos conversions.', () => {
+            expect(TimeCraft.chronos('510593482.204611', '-from et -to utc -fromtype SECONDS')).toEqual('2016-03-07 03:30:14.019');
+            expect(TimeCraft.chronos('510593482.204611', '-from et -to sclk -fromtype SECONDS -sc -76')).toEqual('1/0510592221-24314');
         });
 
         afterAll(() => {
