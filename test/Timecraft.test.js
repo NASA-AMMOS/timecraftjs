@@ -107,6 +107,18 @@ describe('TimeCraft', () => {
             });
         });
 
+        it('should be able to get and set error reporting state', () => {
+            expect(TimeCraft.Spice.erract('GET')).toEqual('DEFAULT');
+            TimeCraft.Spice.erract('SET', 'IGNORE');
+            expect(TimeCraft.Spice.erract('GET')).toEqual('IGNORE');
+
+            expect(TimeCraft.Spice.errprt('GET')).toEqual('SHORT, LONG, EXPLAIN, TRACEBACK, DEFAULT');
+            TimeCraft.Spice.errprt('SET', 'NONE');
+            expect(TimeCraft.Spice.errprt('GET')).toEqual('');
+            TimeCraft.Spice.errprt('SET', 'ALL');
+            expect(TimeCraft.Spice.errprt('GET')).toEqual('SHORT, LONG, EXPLAIN, TRACEBACK');
+        });
+
         it('should return expected values', () => {
             expect(TimeCraft.Spice.bodc2n(-76)).toEqual({ found: 1, name: 'MSL' });
             expect(TimeCraft.Spice.bodc2n(499)).toEqual({ found: 1, name: 'MARS' });

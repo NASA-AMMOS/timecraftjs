@@ -315,13 +315,37 @@ export function deltet(epoch, eptype) {
 /** @memberof SPICE
  * @todo Document and test this!
  */
-export function erract(op, action) {
-    return Module.ccall(
+export function erract(op, action = '') {
+    const action_ptr = Module._malloc(100);
+    Module.stringToUTF8(action, action_ptr, 100);
+
+    Module.ccall(
         'erract_c',
         null,
-        ['string', 'number', 'string'],
-        [op, 100, action],
+        ['string', 'number', 'number'],
+        [op, 100, action_ptr],
     );
+
+    const result = _UTF8ToString(action_ptr, 100);
+    Module._free(action_ptr);
+    return result;
+}
+
+export function errprt(op, list = '') {
+    const list_ptr = Module._malloc(100);
+    Module.stringToUTF8(list, list_ptr, 100);
+
+    Module.ccall(
+        'errprt_c',
+        null,
+        /* ConstSpiceChar op, SpiceInt lenout, SpiceChar list */
+        ['string', 'number', 'number' ],
+        [op, 100, list_ptr],
+    );
+
+    const result = _UTF8ToString(list_ptr, 100);
+    Module._free(list_ptr);
+    return result;
 }
 
 /* et2lst:
