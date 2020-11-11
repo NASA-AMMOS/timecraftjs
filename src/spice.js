@@ -311,6 +311,23 @@ export function erract(op, action) {
     );
 }
 
+export function errprt(op, list) {
+    const list_ptr = Module._malloc(100);
+    Module.stringToUTF8(list, list_ptr, 100);
+
+	Module.ccall(
+		'errprt_c',
+		null,
+		/* ConstSpiceChar op, SpiceInt lenout, SpiceChar list */
+		['string', 'number', 'number' ],
+		[op, 100, list_ptr],
+	);
+
+    const result = Module.UTF8ToString(list_ptr, 200);
+    Module._free(list_ptr);
+	return result;
+}
+
 /* et2lst:
 Given an ephemeris epoch, compute the local solar time for
 an object on the surface of a body at a specified longitude.
