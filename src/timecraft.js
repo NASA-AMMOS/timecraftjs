@@ -155,11 +155,14 @@ export function parseMetakernel(txt) {
     return { paths, fields };
 }
 
-
 export function isMetakernel(contents) {
     if (typeof contents === 'string') {
         return contents.indexOf('KERNELS_TO_LOAD') !== - 1;
     } else {
+        if (contents instanceof ArrayBuffer) {
+            contents = new Uint8Array(contents);
+        }
+
         const subarray = new TextEncoder('utf-8').encode('KERNELS_TO_LOAD');
         return arrayIndexOf(contents, subarray) !== -1;
     }

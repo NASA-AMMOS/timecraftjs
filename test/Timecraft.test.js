@@ -3,7 +3,38 @@ const path = require('path');
 const TimeCraft = require('../cjs/index.js');
 
 describe('TimeCraft', () => {
+    describe('isMetakernel', () => {
+        it('should return true if a metakernel is detected.', () => {
+            const encoded = new TextEncoder('utf-8').encode('__KERNELS_TO_LOAD')
+            expect(TimeCraft.isMetakernel('__KERNELS_TO_LOAD')).toEqual(true);
+            expect(TimeCraft.isMetakernel(encoded)).toEqual(true);
+
+            const metaPath = path.resolve(__dirname, '../kernels/extras/mk/msl_chronos_v07.tm');
+            let bufferContents = new Uint8Array(fs.readFileSync(metaPath));
+            let strContents = fs.readFileSync(metaPath, { encoding: 'utf-8' });
+            expect(TimeCraft.isMetakernel(bufferContents)).toEqual(true);
+            expect(TimeCraft.isMetakernel(strContents)).toEqual(true);
+
+            const kernelPath = path.resolve(__dirname, '../kernels/sclk/msl_76_sclkscet_00016.tsc');
+            bufferContents = new Uint8Array(fs.readFileSync(kernelPath));
+            strContents = fs.readFileSync(kernelPath, { encoding: 'utf-8' });
+            expect(TimeCraft.isMetakernel(bufferContents)).toEqual(false);
+            expect(TimeCraft.isMetakernel(strContents)).toEqual(false);
+        });
+    });
+
     describe('parseMetakernel', () => {
+        it('should parse a buffer the same as a string.', () => {
+            const metaPath = path.resolve(__dirname, '../kernels/extras/mk/msl_chronos_v07.tm');
+            const strContents = fs.readFileSync(metaPath, { encoding: 'utf8' });
+            const bufferContents = fs.readFileSync(metaPath);
+            expect(
+                TimeCraft.parseMetakernel(strContents),
+            ).toEqual(
+                TimeCraft.parseMetakernel(bufferContents),
+            );
+        });
+
         it('should parse metakernal fields.', () => {
             const metaPath = path.resolve(__dirname, '../kernels/extras/mk/msl_chronos_v07.tm');
             const contents = fs.readFileSync(metaPath, { encoding: 'utf8' });
