@@ -160,10 +160,18 @@ unloadKernel( key : String ) : void
 
 Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
 
+#### isMetakernel
+
+```js
+isMetakernel( contents : String | ArrayBuffer | Uint8Array ) : Boolean
+```
+
+Takes the contents of a kernel file and returns `true` if it is a metakernal and `false` otherwise. This function looks for the `KERNELS_TO_LOAD` token in the file.
+
 #### parseMetakernel
 
 ```js
-parseMetakernel( contents : String ) : { fields: Object, paths: Array<String> }
+parseMetakernel( contents : String | ArrayBuffer | Uint8Array ) : { fields: Object, paths: Array<String> }
 ```
 
 Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file as `fields` and all preprocessed referenced metakernal paths as `paths`.
