@@ -1,5 +1,6 @@
 import Module from './cspice.js';
 import * as Spice from './spice.js';
+import { arrayIndexOf } from './utils.js';
 
 const FS = Module.get_fs();
 
@@ -71,6 +72,14 @@ function processTokenValue(value) {
 }
 
 export function parseMetakernel(txt) {
+    if (txt instanceof ArrayBuffer) {
+        txt = new Uint8Array(txt);
+    }
+
+    if (txt instanceof Uint8Array) {
+        txt = new TextDecoder('utf-8').decode(txt);
+    }
+
     // find the data section
     const matches = txt.match(/\\begindata([\w\W]+?)\\/);
     if (!matches) {
@@ -146,3 +155,15 @@ export function parseMetakernel(txt) {
     return { paths, fields };
 }
 
+export function isMetakernel(contents) {
+    if (typeof contents === 'string') {
+        return contents.indexOf('KERNELS_TO_LOAD') !== - 1;
+    } else {
+        if (contents instanceof ArrayBuffer) {
+            contents = new Uint8Array(contents);
+        }
+
+        const subarray = new TextEncoder('utf-8').encode('KERNELS_TO_LOAD');
+        return arrayIndexOf(contents, subarray) !== -1;
+    }
+}
