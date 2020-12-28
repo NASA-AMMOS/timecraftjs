@@ -5,6 +5,7 @@ import {
     unloadKernel,
     chronos,
     parseMetakernel,
+    isMetakernel,
 } from './timecraft.js';
 
 export {
@@ -14,5 +15,6 @@ export {
     loadKernel,
     unloadKernel,
     chronos,
-    parseMetakernel,   
+    parseMetakernel,
+    isMetakernel,
 };

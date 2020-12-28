@@ -9,7 +9,7 @@ window.TimeCraft = TimeCraft;
         '../kernels/lsk/naif0012.tls',
         '../kernels/spk/de425s.bsp',
 
-        // '../kernels/sclk/msl_76_sclkscet_00016.tsc',
+        '../kernels/sclk/msl_76_sclkscet_00016.tsc',
         '../kernels/sclk/msl_lmst_ops120808_v1.tsc',
 
         '../kernels/pck/pck00008.tpc',
@@ -46,7 +46,11 @@ window.TimeCraft = TimeCraft;
 
         const lmst = TimeCraft.Spice.sce2s(-76900, et);
 
-        const sclk = TimeCraft.Spice.sce2c(-76900, et);
+        // See conversion code outlined in
+        // https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/data/sclk/msl_76_sclkscet_00016.tsc
+        const sclkStr = TimeCraft.Spice.sce2s(-76, et);
+        const sclkSplit = sclkStr.split(/[/-]/g).map(v => parseInt(v));
+        const sclk = sclkSplit[1] + sclkSplit[2] / (2**16);
 
         const sunPos = TimeCraft.Spice.spkpos('SUN', et, 'MSL_TOPO', 'LT+S', '-76').ptarg;
         let sunDir = sunPos.map(e => e / sunPos[0]);

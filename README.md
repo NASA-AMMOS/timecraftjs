@@ -74,24 +74,7 @@ import * as TimeCraft from 'timecraftjs';
 const metaKernel = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
 
 // parse the kernel
-const {
-    KERNELS_TO_LOAD,
-    PATH_VALUES,
-    PATH_SYMBOLS,
-} = TimeCraft.parseMetaKernel( metaKernel );
-
-// process the paths to load
-const kernelPaths = KERNELS_TO_LOAD.map( path => {
-
-    let newPath = path;
-    for ( let i = 0; i < PATH_VALUES.length; i ++ ) {
-
-        newPath = newPath.replaceAll( '$' + PATH_SYMBOLS[ i ], PATH_VALUES[ i ] );
-
-    }
-    return newPath;
-
-} );
+const kernelPaths = TimeCraft.parseMetakernel( metaKernel ).paths;
 
 // load the kernels in the meta kernel
 const kernelPromises = kernelPaths.map( p => {
@@ -181,13 +164,21 @@ unloadKernel( key : String ) : void
 
 Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
 
+#### isMetakernel
+
+```js
+isMetakernel( contents : String | ArrayBuffer | Uint8Array ) : Boolean
+```
+
+Takes the contents of a kernel file and returns `true` if it is a metakernal and `false` otherwise. This function looks for the `KERNELS_TO_LOAD` token in the file.
+
 #### parseMetakernel
 
 ```js
-parseMetakernel( contents : String ) : Object
+parseMetakernel( contents : String | ArrayBuffer | Uint8Array ) : { fields: Object, paths: Array<String> }
 ```
 
-Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file. This function can be used to preparse meta kernels and load the kernels referenced in the file.
+Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file as `fields` and all preprocessed referenced metakernal paths as `paths`.
 
 #### chronos
 
@@ -217,6 +208,7 @@ bodvrd( body, item, maxn )
 convrt( x, in_var, out )
 deltet( epoch, eptype )
 erract( op, action )
+errprt( op, list )
 et2lst( et, body, lon, type )
 et2utc( et, format, prec )
 etcal( et )
@@ -241,6 +233,7 @@ scs2e( sc, sclkch )
 sct2e( sc, sclkdp )
 sctiks( sc, clkstr )
 spd()
+spkpos( targ, et, ref, abcorr, obs )
 str2et( str )
 timdef( action, item, value )
 timout( et, pictur )
@@ -300,7 +293,7 @@ In order to recompile cspice.js, follow these steps:
 
 ## License
 
-Copyright 2020, by the California Institute of Technology.  
-ALL RIGHTS RESERVED.  
+Copyright 2020, by the California Institute of Technology.
+ALL RIGHTS RESERVED.
 United States Government Sponsorship acknowledged. Any commercial use must be negotiated with the Office of Technology Transfer at the California Institute of Technology.
 This software may be subject to U.S. export control laws. By accepting this software, the user agrees to comply with all applicable U.S. export laws and regulations. User has the responsibility to obtain export licenses, or other export authority as may be required before exporting such information to foreign countries or providing access to foreign persons.
