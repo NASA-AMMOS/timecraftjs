@@ -9,7 +9,8 @@
 # TimeCraftJS
 
 [![npm version](https://img.shields.io/npm/v/timecraftjs.svg?style=flat-square)](https://www.npmjs.com/package/timecraftjs)
-[![build](https://img.shields.io/github/workflow/status/NASAS-AMMOS/timecraftjs/Node.js%20CI?style=flat-square&label=build)](https://github.com/NASA-AMMOS/timecraftjs/actions)
+![Node.js CI](https://github.com/NASA-AMMOS/timecraftjs/workflows/Node.js%20CI/badge.svg)
+
 <!--[![lgtm code quality](https://img.shields.io/lgtm/grade/javascript/g/NASA-AMMOS/timecraftjs.svg?style=flat-square&label=code-quality)](https://lgtm.com/projects/g/NASA-AMMOS/timecraftjs/)-->
 
 TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). It exposes functions to execute operations to convert [SCET](https://en.wikipedia.org/wiki/Spacecraft_Event_Time), ET, SCT, furnish Kernels, among others, on the client side. This avoid unnecessary trips to the backend and allows for important time operations to happen if network connectivity is not immediately available.
@@ -30,62 +31,56 @@ The compiled emscripten blob includes `require( 'fs' )` which can cause Webpack 
 
 ```js
 node: {
-
-    fs: 'empty'
-
+    fs: "empty";
 }
 ```
 
 ### Time Conversion
 
 ```js
-import * as TimeCraft from 'timecraftjs';
+import * as TimeCraft from "timecraftjs";
 
 // Load the kernels
-const kernelBuffers = await Promise.all( [
-
-    fetch( '../kernels/lsk/naif0012.tls' ).then( res => res.buffer() ),
-    fetch( '../kernels/spk/de425s.bsp' ).then( res => res.buffer() ),
-    fetch( '../kernels/pck/pck00008.tpc' ).then( res => res.buffer() ),
-
-] );
+const kernelBuffers = await Promise.all([
+    fetch("../kernels/lsk/naif0012.tls").then((res) => res.buffer()),
+    fetch("../kernels/spk/de425s.bsp").then((res) => res.buffer()),
+    fetch("../kernels/pck/pck00008.tpc").then((res) => res.buffer()),
+]);
 
 // Load the kernels into Spice
-for ( let i = 0; i < kernelBuffers.length; i ++ ) {
-
-    TimeCraft.loadKernel( kernelBuffers[ i ] );
-
+for (let i = 0; i < kernelBuffers.length; i++) {
+    TimeCraft.loadKernel(kernelBuffers[i]);
 }
 
 // Time conversion!
-const utc = new Date().toISOString().slice( 0, - 1 );
+const utc = new Date().toISOString().slice(0, -1);
 
-const et = Timecraft.Spice.utc2et( utc );
+const et = Timecraft.Spice.utc2et(utc);
 
-const lst = Timecraft.Spice.et2lst( et, 499, 0, 'planetocentric' );
+const lst = Timecraft.Spice.et2lst(et, 499, 0, "planetocentric");
 ```
 
 ### Loading a Metakernel
 
 ```js
-import * as TimeCraft from 'timecraftjs';
+import * as TimeCraft from "timecraftjs";
 
 // load the kernel contents
-const metaKernel = await fetch( '../kernels/extras/mk/msl_chronos_v07.tm' ).then( res => res.text() );
+const metaKernel = await fetch(
+    "../kernels/extras/mk/msl_chronos_v07.tm"
+).then((res) => res.text());
 
 // parse the kernel
-const kernelPaths = TimeCraft.parseMetakernel( metaKernel ).paths;
+const kernelPaths = TimeCraft.parseMetakernel(metaKernel).paths;
 
 // load the kernels in the meta kernel
-const kernelPromises = kernelPaths.map( p => {
+const kernelPromises = kernelPaths.map((p) => {
+    return fetch(p)
+        .then((res) => res.buffer())
+        .then((buffer) => TimeCraft.loadKernel(buffer));
+});
 
-    return fetch( p )
-        .then( res => res.buffer() )
-        .then( buffer => TimeCraft.loadKernel( buffer ) );
-
-} );
-
-await Promise.all( kernelPromises );
+await Promise.all(kernelPromises);
 
 // ready for time conversion!
 ```
@@ -93,7 +88,7 @@ await Promise.all( kernelPromises );
 ### Using the Chronos Function
 
 ```js
-Timecraft.chronos( '617885388.6646054', '-from et -to utc -fromtype SECONDS' );
+Timecraft.chronos("617885388.6646054", "-from et -to utc -fromtype SECONDS");
 ```
 
 ### Running the Example
@@ -116,9 +111,13 @@ This will start a static server so you can visit the example page at `localhost:
 ### Table Of Contents
 
 #### [What Is TimeCraftJS?](#what-is-timecraftjs-1)
+
 #### [Included Files](#included-files-1)
+
 #### [API](#api-1)
+
 #### [Loading Kernels](#loading-kernels-1)
+
 #### [Recompiling cspice.js](#recompiling-cspicejs-1)
 
 ### What Is TimeCraftJS?
@@ -261,10 +260,10 @@ In order to load an read kernels the data must be loaded into the virtual Emscri
 Files must be downloaded asynchronously as array buffers before being loaded into the app.
 
 ```js
-import * as TimeCraft from 'timecraftjs';
+import * as TimeCraft from "timecraftjs";
 
-const kernelBuffer = await fetch( '../path/to/kernel' ).then( res => res.buffer );
-TimeCraft.loadKernelFromBuffer( buffer );
+const kernelBuffer = await fetch("../path/to/kernel").then((res) => res.buffer);
+TimeCraft.loadKernelFromBuffer(buffer);
 ```
 
 ### In Node
@@ -272,24 +271,25 @@ TimeCraft.loadKernelFromBuffer( buffer );
 In node files can be loaded from the filesystem directly.
 
 ```js
-import fs from 'fs';
-import * as TimeCraft from 'timecraftjs';
+import fs from "fs";
+import * as TimeCraft from "timecraftjs";
 
-const kernelBuffer = fs.readFileSync( '../path/to/kernel' );
-TimeCraft.loadKernelFromBuffer( buffer );
+const kernelBuffer = fs.readFileSync("../path/to/kernel");
+TimeCraft.loadKernelFromBuffer(buffer);
 ```
 
 ## Recompiling cspice.js (JPL Internal only)
+
 `cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on July 25, 2017.
 
 In order to recompile cspice.js, follow these steps:
 
-* First, download and extract a relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
-* Second, clone [the timecraft_recompiling branch of spice.js](https://github.jpl.nasa.gov/johnt/spice.js/tree/spicey_recompiling) into a folder.
-* Third, delete the `cspice` directory from the newly downloaded spice.js and replace it with the toolkit you downloaded. Delete cspice.a from cspice/lib (this is not strictly necessary but occasionally causes problems). Optionally, also delete the `cspice.js` file as it will be replaced anyway.
-* Fourth, run `./install.sh`. This will download and set up the required Emscripten files from archived version 1.34.1 and will take some time. We are using this version as the most recent version has problems in the final step. Make certain your have [everything required for Emscripten to run](https://kripken.github.io/emscripten-site/docs/building_from_source/toolchain_what_is_needed.html).
-* Fifth, run `./cspice.sh`. This will move the required chronos files to be included in cspice, compile it, and then port it to a new cspice.js file.
-* Finally, replace the cspice.js in TimeCraftJS with the newly compiled one.
+-   First, download and extract a relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
+-   Second, clone [the timecraft_recompiling branch of spice.js](https://github.jpl.nasa.gov/johnt/spice.js/tree/spicey_recompiling) into a folder.
+-   Third, delete the `cspice` directory from the newly downloaded spice.js and replace it with the toolkit you downloaded. Delete cspice.a from cspice/lib (this is not strictly necessary but occasionally causes problems). Optionally, also delete the `cspice.js` file as it will be replaced anyway.
+-   Fourth, run `./install.sh`. This will download and set up the required Emscripten files from archived version 1.34.1 and will take some time. We are using this version as the most recent version has problems in the final step. Make certain your have [everything required for Emscripten to run](https://kripken.github.io/emscripten-site/docs/building_from_source/toolchain_what_is_needed.html).
+-   Fifth, run `./cspice.sh`. This will move the required chronos files to be included in cspice, compile it, and then port it to a new cspice.js file.
+-   Finally, replace the cspice.js in TimeCraftJS with the newly compiled one.
 
 ## License
 
