@@ -3,12 +3,12 @@ HERE=`pwd`
 
 EMCC_OPTIONS=" \
 	-Oz \
-  -s TOTAL_MEMORY=104857600 \
-  -s ALLOW_MEMORY_GROWTH=1 \
+	-s TOTAL_MEMORY=104857600 \
+	-s ALLOW_MEMORY_GROWTH=1 \
 	-s EXPORTED_FUNCTIONS=@$HERE/exports.json \
 	-s NO_EXIT_RUNTIME=1 \
 	-s ASSERTIONS=1 \
-  -s WASM=0 \
+	-s WASM=0 \
 	--memory-init-file 0 \
 	--closure 1
 	--gc-sections
