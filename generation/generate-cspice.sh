@@ -3,7 +3,7 @@ HERE=`pwd`
 
 EMCC_OPTIONS=" \
 	-Oz \
-	-s TOTAL_MEMORY=104857600 \
+	-s TOTAL_MEMORY=117440512 \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s EXPORTED_FUNCTIONS=@$HERE/exports.json \
 	-s NO_EXIT_RUNTIME=1 \
@@ -23,7 +23,7 @@ export TKCOMPILEOPTIONS
 
 # Move the required chronos files into cspice so that they will be complied in
 cd ../cspice/src/chrnos_c
-cp crcnst.c ../cspice/crcnst.c 
+cp crcnst.c ../cspice/crcnst.c
 cp cronos.c ../cspice/cronos.c
 cp dsplay.c ../cspice/dsplay.c
 cp ls.c ../cspice/ls.c
@@ -43,9 +43,15 @@ emcc $EMCC_OPTIONS cspice/lib/cspice.a -o cspice.js
 
 # Add the funal required line to the new cspice.js
 echo "
+/* eslint-disable */
 
+$(cat cspice.js)
 
-
-Module.get_fs = function(){
+// appended
+Module.get_fs = function() {
 	return FS;
-}" >> cspice.js
+};
+
+export default Module;
+" > cspice.js
+
