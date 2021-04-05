@@ -22,7 +22,7 @@ export TKCOMPILER
 export TKCOMPILEOPTIONS
 
 # Move the required chronos files into cspice so that they will be complied in
-cd ../cspice/src/chrnos_c
+cd ./cspice/src/chrnos_c
 cp crcnst.c ../cspice/crcnst.c
 cp cronos.c ../cspice/cronos.c
 cp dsplay.c ../cspice/dsplay.c
@@ -30,6 +30,7 @@ cp ls.c ../cspice/ls.c
 cp lstmid.c ../cspice/lstmid.c
 cp signal1.h ../cspice/signal1.h
 cp speakr.c ../cspice/speakr.c
+
 cd ../csupport
 cp parcml.c ../cspice/parcml.c
 
