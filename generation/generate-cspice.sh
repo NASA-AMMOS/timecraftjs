@@ -6,6 +6,7 @@ EMCC_OPTIONS=" \
 	-s TOTAL_MEMORY=117440512 \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s EXPORTED_FUNCTIONS=@$HERE/exports.json \
+    -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS','ccall','getValue','setValue','UTF8ToString','stringToUTF8'] \
 	-s NO_EXIT_RUNTIME=1 \
 	-s ASSERTIONS=1 \
 	-s WASM=0 \
@@ -46,11 +47,12 @@ emcc $EMCC_OPTIONS cspice/lib/cspice.a -o cspice.js
 echo "
 /* eslint-disable */
 
+const Module = {};
 $(cat cspice.js)
 
 // appended
 Module.get_fs = function() {
-	return FS;
+	return Module.FS;
 };
 
 export default Module;

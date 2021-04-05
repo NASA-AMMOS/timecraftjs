@@ -10,7 +10,7 @@ const DOUBLE_TYPE = 'double';
 // emscripten build is made.
 const NULL_TERMINATOR = String.fromCharCode(0);
 export function _UTF8ToString(ptr, length) {
-    const result = Module.Pointer_stringify(ptr, length);
+    const result = Module.UTF8ToString(ptr, length);
     const nullIndex = result.indexOf(NULL_TERMINATOR);
     if (nullIndex !== -1) {
         return result.substr(0, nullIndex);
