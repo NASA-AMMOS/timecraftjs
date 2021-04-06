@@ -284,12 +284,12 @@ TimeCraft.loadKernelFromBuffer(buffer);
 
 In order to recompile cspice.js, follow these steps:
 
-1. Download and extract a relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
+1. Download relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 1. Download [emsdk](https://github.com/emscripten-core/emsdk) to download and manage "emscripten" versions.
-1. Install the latest version of emscripten and source the emsdk environment variables. 
-1. Unzip the CSpice source folder and put it in `generation` folder.
-1. Run `generation/generate-cspice.sh` to generate the js library file in the scripts folder.
-1. Move the newly generated `cspice.js` file into the src folder.
+1. Install the latest version of emscripten and source the emsdk environment variables from `emsdk_env.sh`. 
+1. Unzip the CSpice source folder and put the contents into the `generation/cspice` folder.
+1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
+1. Move the newly generated `cspice.js` file into the `src/` folder.
 
 ## License
 
