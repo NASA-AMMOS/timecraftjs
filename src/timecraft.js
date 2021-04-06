@@ -10,7 +10,7 @@ let bufferFileCount = 0;
 // loading kernels
 export function loadKernel(buffer, key = null) {
     if (key !== null && key in fileMap) {
-        throw new Error();
+        throw new Error(`Kernel with key "${key}" has already been loaded.`);
     }
 
     if (buffer instanceof ArrayBuffer) {
