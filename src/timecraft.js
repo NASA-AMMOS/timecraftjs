@@ -2,8 +2,7 @@ import Module from './cspice.js';
 import * as Spice from './spice.js';
 import { arrayIndexOf } from './utils.js';
 
-const FS = Module.get_fs();
-
+const FS = Module.FS;
 const fileMap = {};
 let bufferFileCount = 0;
 

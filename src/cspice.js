@@ -607,9 +607,5 @@ z[0]=1668509029;if(a.preRun)for("function"==typeof a.preRun&&(a.preRun=[a.preRun
 function Wb(){var b=x,c=y,e=!1;x=y=function(){e=!0};try{var k=a._fflush;k&&k(0);["stdout","stderr"].forEach(function(b){(b=R.Ya("/dev/"+b))&&(b=wb[b.object.rdev])&&b.output&&b.output.length&&(e=!0)})}catch(l){}x=b;y=c;e&&A("stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the FAQ), or make sure to emit a newline when you printf etc.")}if(a.preInit)for("function"==typeof a.preInit&&(a.preInit=[a.preInit]);0<a.preInit.length;)a.preInit.pop()();xa=!0;Jm();
 
 // appended
-Module.get_fs = function() {
-	return Module.FS;
-};
-
 export default Module;
 

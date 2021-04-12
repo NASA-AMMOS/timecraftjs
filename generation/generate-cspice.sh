@@ -51,10 +51,6 @@ const Module = {};
 $(cat cspice.js)
 
 // appended
-Module.get_fs = function() {
-	return Module.FS;
-};
-
 export default Module;
 " > cspice.js
 
