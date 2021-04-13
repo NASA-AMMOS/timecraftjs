@@ -280,14 +280,13 @@ TimeCraft.loadKernelFromBuffer(buffer);
 
 ## Recompiling cspice.js
 
-`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 1.38.48.
+`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 2.0.16.
 
 In order to recompile cspice.js, follow these steps:
 
 1. Download relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 1. Download [emsdk](https://github.com/emscripten-core/emsdk) to download and manage "emscripten" versions.
 1. Install the latest version of emscripten and source the emsdk environment variables from `emsdk_env.sh`.
-1. Add the directory with the emsdk version of "llvm-arm" to your PATH.
 1. Unzip the CSpice source folder and put the contents into the `generation/cspice` folder.
 1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
 1. Move the newly generated `cspice.js` file into the `src/` folder.
