@@ -1,5 +1,6 @@
 [
 	"_malloc",
+    "_free",
 	"_appndc_c",
 	"_appndd_c",
 	"_appndi_c",

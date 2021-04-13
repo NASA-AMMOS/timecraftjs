@@ -280,7 +280,7 @@ TimeCraft.loadKernelFromBuffer(buffer);
 
 ## Recompiling cspice.js
 
-`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 1.38.48.
+`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 2.0.16.
 
 In order to recompile cspice.js, follow these steps:
 
