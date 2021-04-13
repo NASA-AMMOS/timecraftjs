@@ -278,18 +278,19 @@ const kernelBuffer = fs.readFileSync("../path/to/kernel");
 TimeCraft.loadKernelFromBuffer(buffer);
 ```
 
-## Recompiling cspice.js (JPL Internal only)
+## Recompiling cspice.js
 
-`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on July 25, 2017.
+`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 1.38.48.
 
 In order to recompile cspice.js, follow these steps:
 
--   First, download and extract a relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
--   Second, clone [the timecraft_recompiling branch of spice.js](https://github.jpl.nasa.gov/johnt/spice.js/tree/spicey_recompiling) into a folder.
--   Third, delete the `cspice` directory from the newly downloaded spice.js and replace it with the toolkit you downloaded. Delete cspice.a from cspice/lib (this is not strictly necessary but occasionally causes problems). Optionally, also delete the `cspice.js` file as it will be replaced anyway.
--   Fourth, run `./install.sh`. This will download and set up the required Emscripten files from archived version 1.34.1 and will take some time. We are using this version as the most recent version has problems in the final step. Make certain your have [everything required for Emscripten to run](https://kripken.github.io/emscripten-site/docs/building_from_source/toolchain_what_is_needed.html).
--   Fifth, run `./cspice.sh`. This will move the required chronos files to be included in cspice, compile it, and then port it to a new cspice.js file.
--   Finally, replace the cspice.js in TimeCraftJS with the newly compiled one.
+1. Download relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
+1. Download [emsdk](https://github.com/emscripten-core/emsdk) to download and manage "emscripten" versions.
+1. Install the latest version of emscripten and source the emsdk environment variables from `emsdk_env.sh`.
+1. Add the directory with the emsdk version of "llvm-arm" to your PATH.
+1. Unzip the CSpice source folder and put the contents into the `generation/cspice` folder.
+1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
+1. Move the newly generated `cspice.js` file into the `src/` folder.
 
 ## License
 

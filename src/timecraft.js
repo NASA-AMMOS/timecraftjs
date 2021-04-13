@@ -2,8 +2,7 @@ import Module from './cspice.js';
 import * as Spice from './spice.js';
 import { arrayIndexOf } from './utils.js';
 
-const FS = Module.get_fs();
-
+const FS = Module.FS;
 const fileMap = {};
 let bufferFileCount = 0;
 
@@ -54,7 +53,7 @@ export function chronos(inptim, cmdlin) {
         [cmdlin, intptr, inptim, outtim_ptr, cmdlin.length, inptim.length, 256],
     );
 
-    const ret = Module.Pointer_stringify(outtim_ptr, 256);
+    const ret = Module.UTF8ToString(outtim_ptr, 256);
     Module._free(outtim_ptr);
     Module._free(intptr);
 

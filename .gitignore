@@ -120,3 +120,5 @@ dist
 
 cjs/
 example/bundle
+generation/cspice/
+generation/cspice.js

@@ -6,19 +6,6 @@ const INT_TYPE = 'i32';
 const DOUBLE_SIZE = 8;
 const DOUBLE_TYPE = 'double';
 
-// TODO: replace this with Module.UTF8ToString once a new
-// emscripten build is made.
-const NULL_TERMINATOR = String.fromCharCode(0);
-export function _UTF8ToString(ptr, length) {
-    const result = Module.Pointer_stringify(ptr, length);
-    const nullIndex = result.indexOf(NULL_TERMINATOR);
-    if (nullIndex !== -1) {
-        return result.substr(0, nullIndex);
-    } else {
-        return result.trim();
-    }
-}
-
 /**
  * @memberof SPICE
  * @func b1900
@@ -66,7 +53,7 @@ export function bodc2n(code) {
         [code, 100, name_ptr, found_ptr],
     );
     const found = Module.getValue(found_ptr, INT_TYPE);
-    const name = _UTF8ToString(name_ptr, 100);
+    const name = Module.UTF8ToString(name_ptr, 100);
     Module._free(name_ptr);
     Module._free(found_ptr);
 
@@ -90,7 +77,7 @@ export function bodc2s(code) {
         ['number', 'number', 'number'],
         [code, 100, name_ptr],
     );
-    const name = _UTF8ToString(name_ptr, 100);
+    const name = Module.UTF8ToString(name_ptr, 100);
     Module._free(name_ptr);
     return name;
 }
@@ -326,7 +313,7 @@ export function erract(op, action = '') {
         [op, 100, action_ptr],
     );
 
-    const result = _UTF8ToString(action_ptr, 100);
+    const result = Module.UTF8ToString(action_ptr, 100);
     Module._free(action_ptr);
     return result;
 }
@@ -343,7 +330,7 @@ export function errprt(op, list = '') {
         [op, 100, list_ptr],
     );
 
-    const result = _UTF8ToString(list_ptr, 100);
+    const result = Module.UTF8ToString(list_ptr, 100);
     Module._free(list_ptr);
     return result;
 }
@@ -385,8 +372,8 @@ export function et2lst(et, body, lon, type) {
         ['number', 'number', 'number', 'string', 'number', 'number', 'number', 'number', 'number', 'number', 'number'],
         [et, body, lon, type, 100, 100, hr_ptr, mn_ptr, sc_ptr, time_ptr, ampm_ptr],
     );
-    const ampm = _UTF8ToString(ampm_ptr, 100);
-    const time = _UTF8ToString(time_ptr, 100);
+    const ampm = Module.UTF8ToString(ampm_ptr, 100);
+    const time = Module.UTF8ToString(time_ptr, 100);
     const sc = Module.getValue(sc_ptr, INT_TYPE);
     const mn = Module.getValue(mn_ptr, INT_TYPE);
     const hr = Module.getValue(hr_ptr, INT_TYPE);
@@ -425,7 +412,7 @@ export function et2utc(et, format, prec) {
         ['number', 'string', 'number', 'number', 'number'],
         [et, format, prec, 100, utcstr_ptr],
     );
-    const utcstr = _UTF8ToString(utcstr_ptr, 100);
+    const utcstr = Module.UTF8ToString(utcstr_ptr, 100);
     Module._free(utcstr_ptr);
     return utcstr;
 }
@@ -448,7 +435,7 @@ export function etcal(et) {
         ['number', 'number', 'number'],
         [et, 100, string_ptr],
     );
-    const string = _UTF8ToString(string_ptr, 100);
+    const string = Module.UTF8ToString(string_ptr, 100);
     Module._free(string_ptr);
     return string;
 }
@@ -505,7 +492,7 @@ export function getmsg(option) {
         ['string', 'number', 'number'],
         [option, 1841, msg_ptr],
     );
-    const msg = _UTF8ToString(msg_ptr, 1841);
+    const msg = Module.UTF8ToString(msg_ptr, 1841);
     Module._free(msg_ptr);
     return msg;
 }
@@ -651,7 +638,7 @@ export function scdecd(sc, sclkdp) {
         ['number', 'number', 'number', 'number'],
         [sc, sclkdp, 100, sclkch_ptr],
     );
-    const sclkch = _UTF8ToString(sclkch_ptr, 100);
+    const sclkch = Module.UTF8ToString(sclkch_ptr, 100);
     Module._free(sclkch_ptr);
     return sclkch;
 }
@@ -700,7 +687,7 @@ export function sce2s(sc, et) {
         ['number', 'number', 'number', 'number'],
         [sc, et, 100, sclkch_ptr],
     );
-    const sclkch = _UTF8ToString(sclkch_ptr, 100);
+    const sclkch = Module.UTF8ToString(sclkch_ptr, 100);
     Module._free(sclkch_ptr);
     return sclkch;
 }
@@ -774,7 +761,7 @@ export function scfmt(sc, ticks) {
         ['number', 'number', 'number', 'number'],
         [sc, ticks, 100, clkstr_ptr],
     );
-    const clkstr = _UTF8ToString(clkstr_ptr, 100);
+    const clkstr = Module.UTF8ToString(clkstr_ptr, 100);
     Module._free(clkstr_ptr);
     return clkstr;
 }
@@ -940,7 +927,7 @@ export function timdef(action, item, value) {
         [action, item, 100, value_ptr],
     );
 
-    const valueOut = _UTF8ToString(value_ptr, 100);
+    const valueOut = Module.UTF8ToString(value_ptr, 100);
     Module._free(value_ptr);
     return valueOut;
 }
@@ -965,7 +952,7 @@ export function timout(et, pictur) {
         ['number', 'string', 'number', 'number'],
         [et, pictur, 100, output_ptr],
     );
-    const output = _UTF8ToString(output_ptr, 100);
+    const output = Module.UTF8ToString(output_ptr, 100);
     Module._free(output_ptr);
     return output;
 }
@@ -986,7 +973,7 @@ export function tparse(string) {
         ['string', 'number', 'number', 'number'],
         [string, 2000, sp2000_ptr, errmsg_ptr],
     );
-    const errmsg = _UTF8ToString(errmsg_ptr, 2000);
+    const errmsg = Module.UTF8ToString(errmsg_ptr, 2000);
     const sp2000 = Module.getValue(sp2000_ptr, DOUBLE_TYPE);
     Module._free(errmsg_ptr);
     Module._free(sp2000_ptr);
@@ -1014,9 +1001,9 @@ export function tpictr(sample) {
         ['string', 'number', 'number', 'number', 'number', 'number'],
         [sample, 100, 2000, picture_ptr, ok_ptr, errmsg_ptr],
     );
-    const picture = _UTF8ToString(picture_ptr, 100);
+    const picture = Module.UTF8ToString(picture_ptr, 100);
     const ok = Module.getValue(ok_ptr, INT_TYPE);
-    const errmsg = _UTF8ToString(errmsg_ptr, 2000);
+    const errmsg = Module.UTF8ToString(errmsg_ptr, 2000);
     Module._free(picture_ptr);
     Module._free(ok_ptr);
     Module._free(errmsg_ptr);
