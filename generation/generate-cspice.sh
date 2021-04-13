@@ -1,6 +1,9 @@
 #!/bin/bash
 HERE=`pwd`
 
+# debug options
+# -s ASSERTIONS=1
+# -s SAFE_HEAP=1
 EMCC_OPTIONS="
 	-Oz
 	-s TOTAL_MEMORY=117440512
@@ -8,8 +11,8 @@ EMCC_OPTIONS="
 	-s EXPORTED_FUNCTIONS=@$HERE/exports.json
     -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS','ccall','getValue','setValue','UTF8ToString','stringToUTF8']
 	-s NO_EXIT_RUNTIME=1
-	-s ASSERTIONS=1
 	-s WASM=0
+    -s MODULARIZE=1
 	--memory-init-file 0
 	--closure 1
 	-flto
@@ -39,7 +42,6 @@ emcc $EMCC_OPTIONS cspice/src/cspice/*.c -o cspice.js
 echo "
 /* eslint-disable */
 
-const Module = {};
 $(cat cspice.js)
 
 // appended
