@@ -12,7 +12,13 @@ export class Spice {
         this._fileMap = {};
         this.module = null;
         this.ready = false;
-        this.whenReady = createModule({}).then(module => {
+        this.onStdOut = (...args) => console.log(...args);
+        this.onStdErr = (...args) => console.error(...args);
+
+        this.whenReady = createModule({
+            print: (...args) => this.onStdOut(...args),
+            printErr: (...args) => this.onStdErr(...args),
+        }).then(module => {
             this.module = module;
             this.ready = true;
         });
