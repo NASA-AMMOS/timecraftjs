@@ -1,4 +1,4 @@
-import { Spice } from './spice.js';
+import { Spice } from './Spice.js';
 import {
     parseMetakernel,
     isMetakernel,

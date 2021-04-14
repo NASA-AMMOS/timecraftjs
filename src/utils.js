@@ -1,5 +1,6 @@
 // https://www.geeksforgeeks.org/check-string-substring-another/
-function arrayIndexOf(array, subarray) {
+// exported for testing
+export function arrayIndexOf(array, subarray) {
     let t = 0;
     const len = array.length;
     const subLength = subarray.length;

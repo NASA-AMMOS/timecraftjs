@@ -3,11 +3,9 @@ import { Spice } from '../src/index.js';
 ( async function() {
 
     const spiceInstance = new Spice();
-
-    console.log( spiceInstance.ready, spiceInstance.whenReady );
     await spiceInstance.whenReady;
-
     window.spiceInstance = spiceInstance;
+
     const buffers = await Promise.all([
         // kernels from
         // https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/extras/mk/msl_chronos_v07.tm
