@@ -5,9 +5,54 @@ const { Spice } = require('../cjs/index.js');
 describe('Spice', () => {
     let spiceInstance = null;
     beforeEach(async () => {
-        spiceInstance = new Spice();
-        await spiceInstance.whenReady;
-    })
+        spiceInstance = await new Spice().init();
+    });
+
+    describe('async init', () => {
+        it('should throw an error if init has not been called.', () => {
+            const inst = new Spice();
+            let caught = false;
+            try {
+                inst.et2lst(510593482.204611, 499, 0, 'planetocentric');
+            } catch(e) {
+                caught = true;
+            }
+            expect(caught).toBeTruthy();
+        });
+
+        it('should throw an error if init has not resolved.', () => {
+            const inst = new Spice();
+            inst.init();
+
+            let caught = false;
+            try {
+                inst.et2lst(510593482.204611, 499, 0, 'planetocentric');
+            } catch(e) {
+                caught = true;
+            }
+            expect(caught).toBeTruthy();
+        });
+
+        it('should resolve whenReady when compleete.', async () => {
+            const inst = new Spice();
+
+            let resolved = false;
+            inst.whenReady.then(() => {
+                resolved = true;
+            });
+
+            await inst.init();
+            expect(resolved).toBeTruthy();
+        });
+
+        it('should resolve with the class instance.', async () => {
+            const inst = new Spice();
+            const results = await Promise.all([inst.whenReady, inst.init()]);
+
+            expect(results[0]).toBe(inst);
+            expect(results[1]).toBe(inst);
+        });
+    });
 
     describe('loading kernels', () => {
         it('should throw an error if two kernels are loaded with the same key.', () => {

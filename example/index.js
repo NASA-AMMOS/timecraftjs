@@ -2,8 +2,7 @@ import { Spice } from '../src/index.js';
 
 ( async function() {
 
-    const spiceInstance = new Spice();
-    await spiceInstance.whenReady;
+    const spiceInstance = await new Spice().init();
     window.spiceInstance = spiceInstance;
 
     const buffers = await Promise.all([

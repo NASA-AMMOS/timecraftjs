@@ -10,17 +10,26 @@ let bufferFileCount = 0;
 export class Spice {
     constructor() {
         this._fileMap = {};
+        this._readyResolve = null;
         this.module = null;
         this.ready = false;
+        this.whenReady = new Promise(resolve => {
+            this._readyResolve = resolve;
+        });
         this.onStdOut = (...args) => console.log(...args);
         this.onStdErr = (...args) => console.error(...args);
+    }
 
-        this.whenReady = createModule({
+    // initialize the module
+    init() {
+        return createModule({
             print: (...args) => this.onStdOut(...args),
             printErr: (...args) => this.onStdErr(...args),
         }).then(module => {
             this.module = module;
             this.ready = true;
+            this._readyResolve(this);
+            return this;
         });
     }
 
