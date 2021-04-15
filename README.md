@@ -38,7 +38,9 @@ node: {
 ### Time Conversion
 
 ```js
-import * as TimeCraft from "timecraftjs";
+import { Spice } from "timecraftjs";
+
+const spiceInstance = await new Spice().init();
 
 // Load the kernels
 const kernelBuffers = await Promise.all([
@@ -49,21 +51,23 @@ const kernelBuffers = await Promise.all([
 
 // Load the kernels into Spice
 for (let i = 0; i < kernelBuffers.length; i++) {
-    TimeCraft.loadKernel(kernelBuffers[i]);
+    spiceInstance.loadKernel(kernelBuffers[i]);
 }
 
 // Time conversion!
 const utc = new Date().toISOString().slice(0, -1);
 
-const et = Timecraft.Spice.utc2et(utc);
+const et = spiceInstance.utc2et(utc);
 
-const lst = Timecraft.Spice.et2lst(et, 499, 0, "planetocentric");
+const lst = spiceInstance.et2lst(et, 499, 0, "planetocentric");
 ```
 
 ### Loading a Metakernel
 
 ```js
-import * as TimeCraft from "timecraftjs";
+import { Spice, parseMetakernel } from "timecraftjs";
+
+const spiceInstance = await new Spice().init();
 
 // load the kernel contents
 const metaKernel = await fetch(
@@ -71,13 +75,13 @@ const metaKernel = await fetch(
 ).then((res) => res.text());
 
 // parse the kernel
-const kernelPaths = TimeCraft.parseMetakernel(metaKernel).paths;
+const kernelPaths = parseMetakernel(metaKernel).paths;
 
 // load the kernels in the meta kernel
 const kernelPromises = kernelPaths.map((p) => {
     return fetch(p)
         .then((res) => res.buffer())
-        .then((buffer) => TimeCraft.loadKernel(buffer));
+        .then((buffer) => spiceInstance.loadKernel(buffer));
 });
 
 await Promise.all(kernelPromises);
@@ -88,7 +92,7 @@ await Promise.all(kernelPromises);
 ### Using the Chronos Function
 
 ```js
-Timecraft.chronos("617885388.6646054", "-from et -to utc -fromtype SECONDS");
+spiceInstance.chronos("617885388.6646054", "-from et -to utc -fromtype SECONDS");
 ```
 
 ### Running the Example
@@ -137,15 +141,67 @@ This file contains the ported CSPICE source code. It is extremely large and shou
 
 #### spice.js
 
-This file contains the wrapper functions that allow access to the functionality in cspice.js. The version of spice.js here is focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed.
-
-#### timecraft.js
-
-This file handles detecting if running in Node or a browser, making requests for and furnishing kernels, setting up the timecraft object, setting values and calling events once setup has finished, and outputting CSPICE errors. The first line of this file must be array of kernels to request and furnish, and that first line is edited by other scripts in this file (kernel_setup.py and/or postinstall.js, specifically). If running in Node, this is the file to import.
+This file contains the wrapper class that allows access to the functionality in cspice.js. The version of spice.js here is focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed.
 
 ## API
 
-### Functions
+### Spice
+
+Class used to instantiate an instance of Spice. Multiple instances can be created to load different kernels if desired. [init](#init) must be called before use.
+
+_Note that due to the memory requirements of CSpice each instance of this class will take around 100MB of memory._
+
+#### .ready
+
+```js
+ready : Boolean
+```
+
+Whether the class has been fully initialized after [init](#init) has been called.
+
+#### .whenReady
+
+```js
+whenReady : Promise<this>
+```
+
+Resolves when the class has been fully initialized after [init](#init) has been called.
+
+#### .onStdOut
+
+```js
+onStdOut : ( log : String ) => void
+```
+
+Callback that gets fired whenever CSpice logs to stdout. Defaults to log to console.
+
+#### .onStdErr
+
+```js
+onStdErr : ( log : String ) => void
+```
+
+Callback that gets fired whenever CSpice logs to stderr. Defaults to log error to console.
+
+#### .module
+
+```js
+module : Object = null
+```
+
+This is the raw Emscripten compiled module that is used to call CSpice functions and interact with the virtual file system. There is typically no need to use this object but unexposed CSpice functions can be called here using `ccall`.
+
+`Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
+
+`module` is null until [init](#init) has fully resolved.
+
+#### .init
+
+```js
+init() : Promise<this>
+```
+
+Loads and initializes the CSpice module. The class is ready to use once the promise has resolved.
 
 #### loadKernel
 
@@ -163,22 +219,6 @@ unloadKernel( key : String ) : void
 
 Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
 
-#### isMetakernel
-
-```js
-isMetakernel( contents : String | ArrayBuffer | Uint8Array ) : Boolean
-```
-
-Takes the contents of a kernel file and returns `true` if it is a metakernal and `false` otherwise. This function looks for the `KERNELS_TO_LOAD` token in the file.
-
-#### parseMetakernel
-
-```js
-parseMetakernel( contents : String | ArrayBuffer | Uint8Array ) : { fields: Object, paths: Array<String> }
-```
-
-Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file as `fields` and all preprocessed referenced metakernal paths as `paths`.
-
 #### chronos
 
 ```js
@@ -187,11 +227,11 @@ chronos( inptim : String, cmdlin : String ) : String
 
 Wrapper for the CSpice command line utility that calls the `cronos_` function internally. `inptim` is the input time to convert while `cmdlin` is the list of command line arguments as a string. See the [chronos](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/ug/chronos.html) docs for more information.
 
-### Spice
+#### Spice Functions
 
 Most of the functions made available in this library are functions from CSPICE called in a more Javascript-like way. Please see [differences between cspice and spice.js](https://github.com/NASA-AMMOS/timecraftjs.js#differences-between-cspice-and-spicejs) for specifics.
 
-While the ported C code technically contains all CSPICE functionality, the following functions have been exposed in this library. The [CSPICE documentation](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html) for each of these functions is correct, but below you can see their more Javascript-like call format supported here. All documented CSpice function inputs are passed into the Javascript equivelants below while all outputs are returned as a dictionary indexed by parameter name or as a single value if there is only a single output.
+While the ported C code technically contains all CSPICE functionality, the following functions have been exposed in this class. The [CSPICE documentation](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/cspice/index.html) for each of these functions is correct, but below you can see their more Javascript-like call format supported here. All documented CSpice function inputs are passed into the Javascript equivelants below while all outputs are returned as a dictionary indexed by parameter name or as a single value if there is only a single output.
 
 ```
 b1900()
@@ -245,11 +285,23 @@ unload( file )
 utc2et( utcstr )
 ```
 
-### CSpice
+### Functions
 
-This is the raw Emscripten compiled module that is used to call CSpice functions and interact with the virtual file system. There is typically no need to use this object but unexposed CSpice functions can be called here using `ccall`.
+#### isMetakernel
 
-`Module` and `FS` are created by Emscripten to interact directly with the ported C code and with the simulated C file system. Avoid using them unless you have read the [Interacting With Code](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html) and [preamble.js](http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html#ccall) sections of the Emscripten documentation.
+```js
+isMetakernel( contents : String | ArrayBuffer | Uint8Array ) : Boolean
+```
+
+Takes the contents of a kernel file and returns `true` if it is a metakernal and `false` otherwise. This function looks for the `KERNELS_TO_LOAD` token in the file.
+
+#### parseMetakernel
+
+```js
+parseMetakernel( contents : String | ArrayBuffer | Uint8Array ) : { fields: Object, paths: Array<String> }
+```
+
+Parses the contents of a metakernel `.tm` file and returns all the key value pairs in the file as `fields` and all preprocessed referenced metakernal paths as `paths`.
 
 ## Loading Kernels
 
@@ -260,10 +312,11 @@ In order to load an read kernels the data must be loaded into the virtual Emscri
 Files must be downloaded asynchronously as array buffers before being loaded into the app.
 
 ```js
-import * as TimeCraft from "timecraftjs";
+import { Spice } from "timecraftjs";
 
+const spiceInstance = await new Spice().init();
 const kernelBuffer = await fetch("../path/to/kernel").then((res) => res.buffer);
-TimeCraft.loadKernelFromBuffer(buffer);
+spiceInstance.loadKernel(buffer);
 ```
 
 ### In Node
@@ -272,10 +325,11 @@ In node files can be loaded from the filesystem directly.
 
 ```js
 import fs from "fs";
-import * as TimeCraft from "timecraftjs";
+import { Spice } from "timecraftjs";
 
+const spiceInstance = await new Spice().init();
 const kernelBuffer = fs.readFileSync("../path/to/kernel");
-TimeCraft.loadKernelFromBuffer(buffer);
+spiceInstance.loadKernel(buffer);
 ```
 
 ## Recompiling cspice.js

@@ -1,7 +1,9 @@
-import * as TimeCraft from '../src/index.js';
-window.TimeCraft = TimeCraft;
+import { Spice } from '../src/index.js';
 
 ( async function() {
+
+    const spiceInstance = await new Spice().init();
+    window.spiceInstance = spiceInstance;
 
     const buffers = await Promise.all([
         // kernels from
@@ -24,7 +26,7 @@ window.TimeCraft = TimeCraft;
 
     buffers.forEach( buffer => {
 
-        TimeCraft.loadKernel( buffer );
+        spiceInstance.loadKernel( buffer );
 
     } );
 
@@ -40,19 +42,19 @@ window.TimeCraft = TimeCraft;
         let utc = new Date().toISOString();
         utc = utc.slice(0, utc.length - 1);
 
-        const et = TimeCraft.Spice.utc2et(utc);
+        const et = spiceInstance.utc2et(utc);
 
-        const lst = TimeCraft.Spice.et2lst(et, 499, 0, 'planetocentric');
+        const lst = spiceInstance.et2lst(et, 499, 0, 'planetocentric');
 
-        const lmst = TimeCraft.Spice.sce2s(-76900, et);
+        const lmst = spiceInstance.sce2s(-76900, et);
 
         // See conversion code outlined in
         // https://naif.jpl.nasa.gov/pub/naif/pds/data/msl-m-spice-6-v1.0/mslsp_1000/data/sclk/msl_76_sclkscet_00016.tsc
-        const sclkStr = TimeCraft.Spice.sce2s(-76, et);
+        const sclkStr = spiceInstance.sce2s(-76, et);
         const sclkSplit = sclkStr.split(/[/-]/g).map(v => parseInt(v));
         const sclk = sclkSplit[1] + sclkSplit[2] / (2**16);
 
-        const sunPos = TimeCraft.Spice.spkpos('SUN', et, 'MSL_TOPO', 'LT+S', '-76').ptarg;
+        const sunPos = spiceInstance.spkpos('SUN', et, 'MSL_TOPO', 'LT+S', '-76').ptarg;
         let sunDir = sunPos.map(e => e / sunPos[0]);
         let sunLen = Math.sqrt(sunDir[0]**2 + sunDir[1]**2 + sunDir[2]**2);
         sunDir[0] /= sunLen;
