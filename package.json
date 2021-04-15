@@ -1,6 +1,6 @@
 {
     "name": "timecraftjs",
-    "version": "1.0.1",
+    "version": "2.0.0-alpha3",
     "description": "Time conversion using NAIF CSPICE Toolkit in JavaScript via Emscripten.",
     "main": "cjs/index.js",
     "module": "src/index.js",
