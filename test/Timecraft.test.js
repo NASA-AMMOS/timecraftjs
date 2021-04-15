@@ -4,7 +4,7 @@ const { Spice } = require('../cjs/index.js');
 
 describe('Spice', () => {
     let spiceInstance = null;
-    beforeEach(async () => {
+    beforeAll(async () => {
         spiceInstance = await new Spice().init();
     });
 
@@ -166,7 +166,7 @@ describe('Spice', () => {
             expect(spiceInstance.chronos('510593482.204611', '-from et -to sclk -fromtype SECONDS -sc -76')).toEqual('1/0510592221-24314');
         });
 
-        afterAll(() => {
+        afterEach(() => {
             kernelPaths.forEach(p => {
                 spiceInstance.unloadKernel(p);
             });
