@@ -121,4 +121,5 @@ dist
 cjs/
 example/bundle
 generation/cspice/
+generation/cspice-full/
 generation/cspice.js
