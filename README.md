@@ -145,6 +145,18 @@ This file contains the wrapper class that allows access to the functionality in 
 
 ## API
 
+### Constants
+
+Constants for use in the [Spice.init](#init) function to intialize the library to use either a full or lite version of the SPICE library.
+
+#### ASM_SPICE_FULL
+
+This constant indicates to load and use the full SPICE library with full functionality. Run time memory requirement is around 100 MB.
+
+#### ASM_SPICE_LITE
+
+This indicates to load and use an unofficial "lite" version of the SPICE library with some mission funcitonality to improve memory requirements. Specifically all `ek*` functions have been removed and various internal constants have been lowered to reduce memory use. Not all NAIF kernels can be guaranteed to function when using this reduced memory of the package. If an error occurs due to overrunning memory use the "full" version, instead. Run time memory requirement is around 20 MB.
+
 ### Spice
 
 Class used to instantiate an instance of Spice. Multiple instances can be created to load different kernels if desired. [init](#init) must be called before use.
@@ -198,12 +210,14 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 #### .init
 
 ```js
-init() : Promise<this>
+init( type : ( ASM_SPICE_LITE | ASM_SPICE_FULL ) = ASM_SPICE_LITE ) : Promise<this>
 ```
 
 Loads and initializes the CSpice module. The class is ready to use once the promise has resolved.
 
-#### loadKernel
+The "type" parameter can be used to dictate which version of the compiled CSPICE module to use. See the [Constants](#Constants) section for available options and more information. Defaults to using the "lite" version of the module.
+
+#### .loadKernel
 
 ```js
 loadKernel( buffer : ArrayBuffer | Uint8Array, key : String = null ) : void
@@ -211,7 +225,7 @@ loadKernel( buffer : ArrayBuffer | Uint8Array, key : String = null ) : void
 
 Load the provided buffer into Spice as a kernel. The provided key can be used to unload the kernel using [unloadKernel](#unloadKernel). Throws an error if the key has already been used. Details of kernel management can be found in the [Kernel Management](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/kernel.html#Section%205%20--%20Kernel%20Management) section of the SPICE docs.
 
-#### unloadKernel
+#### .unloadKernel
 
 ```js
 unloadKernel( key : String ) : void
@@ -219,7 +233,7 @@ unloadKernel( key : String ) : void
 
 Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
 
-#### chronos
+#### .chronos
 
 ```js
 chronos( inptim : String, cmdlin : String ) : String
