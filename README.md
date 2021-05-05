@@ -135,11 +135,11 @@ See example-timecraftjs.html for a simple demo of TimeCraftJS working.
 
 This section lists the files included in this package and describes what each of them does. This section is mainly for people who wish to modify this package, if you simply wish to use it you can likely skip this section.
 
-#### cspice.js
+#### src/cspice/*.js
 
-This file contains the ported CSPICE source code. It is extremely large and should not be modified. This file must begin executing after spice.js and timecraft.js, so make sure to include it last. If running in Node, import timecraft.js, not this file.
+These files contain the emscripten-converted CSPICE source code. It is extremely large and should not be modified. Both a "full" and "lite" version of converted CSPICE is provided. See the [Constants](#Constants) section for more information on the variants.
 
-#### spice.js
+#### src/spice.js
 
 This file contains the wrapper class that allows access to the functionality in cspice.js. The version of spice.js here is focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed.
 
