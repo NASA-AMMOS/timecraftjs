@@ -1,18 +1,18 @@
 #!/bin/bash
 HERE=`pwd`
 
-LITE_BUILD=False
+LITE_BUILD=True
 if $LITE_BUILD
 then
     TOTAL_MEMORY="21364736"
     EXPORTED_FUNCTIONS="@$HERE/exports-lite.json"
-    FILE_NAME="asm_lite.mjs"
+    FILE_NAME="asm_lite.js"
     COPY_SOURCE="./cspice-full"
     BUILD_DIR="./cspice-lite"
 else
-    TOTAL_MEMORY="21364736"
-    EXPORTED_FUNCTIONS="@$HERE/exports-lite.json"
-    FILE_NAME="asm_lite.mjs"
+    TOTAL_MEMORY="106168320"
+    EXPORTED_FUNCTIONS="@$HERE/exports.json"
+    FILE_NAME="asm_full.js"
     COPY_SOURCE="./cspice-full"
     BUILD_DIR="./cspice-full"
 fi
