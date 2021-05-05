@@ -29,7 +29,7 @@ export class Spice {
         let promise;
         switch(type) {
             case ASM_SPICE_LITE:
-                promise = import('./cspice/asm_full.js');
+                promise = import('./cspice/asm_lite.js');
             case ASM_SPICE_FULL:
                 promise = import('./cspice/asm_full.js');
         }
