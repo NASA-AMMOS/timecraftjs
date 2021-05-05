@@ -348,16 +348,34 @@ spiceInstance.loadKernel(buffer);
 
 ## Recompiling cspice.js
 
-`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 2.0.17.
+The files in `src/cspice/` are the massive Javascript files resulting from the automatic porting via Emscripten. As such, if CSPICE updates, these files will need to be recompiled. In order to recompile any of the JS CSPICE files, follow these steps:
 
-In order to recompile cspice.js, follow these steps:
+### Setting Up Emscripten
 
 1. Download relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 1. Download [emsdk](https://github.com/emscripten-core/emsdk) to download and manage "emscripten" versions.
 1. Install the latest version of emscripten and source the emsdk environment variables from `emsdk_env.sh`.
-1. Unzip the CSpice source folder and put the contents into the `generation/cspice` folder.
+
+### CSPICE Full (asm_full.js)
+
+The current version was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with emscripten version 2.0.17.
+
+1. Unzip the CSPICE source folder and put the contents into the `generation/cspice-full` folder.
+1. Ensure the `LITE_BUILD` variable is set to `False` in `generation/generate-cspice.sh`.
 1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
-1. Move the newly generated `cspice.js` file into the `src/` folder.
+1. Move the newly generated `asm_full.js` file into the `src/cspice` folder.
+
+### CSPICE Lite (asm_lite.js)
+
+_INTERNAL ONLY_
+
+The modified lite version of the CSPICE used was dervied from the latest version of CSPICE on April 27, 2021 with emscripten version 2.0.17. The CSPICE lite code only provides modified `src/cspice` functions so necessary chronos functionality is copied from the latest public version.
+
+1. Unzip the latest CSPICE source folder (see above) and put the contents into the `generation/cspice-full` folder.
+1. Unzip the CSPICE lite source folder and put the contents into the `generation/cspice-lite` folder.
+1. Ensure the `LITE_BUILD` variable is set to `True` in `generation/generate-cspice.sh`.
+1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
+1. Move the newly generated `asm_lite.js` file into the `src/cspice` folder.
 
 ## License
 
