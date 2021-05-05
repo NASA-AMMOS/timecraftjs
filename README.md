@@ -13,7 +13,7 @@
 
 <!--[![lgtm code quality](https://img.shields.io/lgtm/grade/javascript/g/NASA-AMMOS/timecraftjs.svg?style=flat-square&label=code-quality)](https://lgtm.com/projects/g/NASA-AMMOS/timecraftjs/)-->
 
-TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). It exposes functions to execute operations to convert [SCET](https://en.wikipedia.org/wiki/Spacecraft_Event_Time), ET, SCT, furnish Kernels, among others, on the client side. This avoid unnecessary trips to the backend and allows for important time operations to happen if network connectivity is not immediately available.
+TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). It exposes functions to execute operations to convert [SCET](https://en.wikipedia.org/wiki/Spacecraft_Event_Time), ET, SCT, furnish Kernels, among others, on the client side. This avoid unnecessary trips to the backend and allows for important time operations to happen if network connectivity is not immediately available. Multiple variants of the built CSPICE library are provided, including a limited, low-memory "lite" version with lesser functionality which is loaded by default. See [Constants](#Constants) section and [init](#init) function description for more information on the options.
 
 Some basic kernels are provided in this repo for performing time conversions. More kernels for other missions can be found [here](https://naif.jpl.nasa.gov/pub/naif/pds/data/).
 
@@ -135,15 +135,27 @@ See example-timecraftjs.html for a simple demo of TimeCraftJS working.
 
 This section lists the files included in this package and describes what each of them does. This section is mainly for people who wish to modify this package, if you simply wish to use it you can likely skip this section.
 
-#### cspice.js
+#### src/cspice/*.js
 
-This file contains the ported CSPICE source code. It is extremely large and should not be modified. This file must begin executing after spice.js and timecraft.js, so make sure to include it last. If running in Node, import timecraft.js, not this file.
+These files contain the emscripten-converted CSPICE source code. It is extremely large and should not be modified. Both a "full" and "lite" version of converted CSPICE is provided. See the [Constants](#Constants) section for more information on the variants.
 
-#### spice.js
+#### src/spice.js
 
 This file contains the wrapper class that allows access to the functionality in cspice.js. The version of spice.js here is focused on time conversions, but the rest of the CSPICE functionality could be exposed if needed.
 
 ## API
+
+### Constants
+
+Constants for use in the [Spice.init](#init) function to intialize the library to use either a full or lite version of the SPICE library.
+
+#### ASM_SPICE_FULL
+
+Use this constant to load and use the full asm.js version of the SPICE library with full functionality. Run time memory requirement is around 100 MB.
+
+#### ASM_SPICE_LITE
+
+Use this constant to load and use an asm.js version of an unofficial "lite" version of the SPICE library with some missing functonality to improve memory requirements. Specifically all `ek*` functions have been removed and various internal constants have been lowered to reduce memory use. Not all NAIF kernels can be guaranteed to function when using this reduced memory of the package. If an error occurs due to overrunning memory use the "full" version, instead. Run time memory requirement is around 20 MB.
 
 ### Spice
 
@@ -198,12 +210,14 @@ This is the raw Emscripten compiled module that is used to call CSpice functions
 #### .init
 
 ```js
-init() : Promise<this>
+init( type : ( ASM_SPICE_LITE | ASM_SPICE_FULL ) = ASM_SPICE_LITE ) : Promise<this>
 ```
 
 Loads and initializes the CSpice module. The class is ready to use once the promise has resolved.
 
-#### loadKernel
+The "type" parameter can be used to dictate which version of the compiled CSPICE module to use. See the [Constants](#Constants) section for available options and more information. Defaults to using the "lite" version of the module.
+
+#### .loadKernel
 
 ```js
 loadKernel( buffer : ArrayBuffer | Uint8Array, key : String = null ) : void
@@ -211,7 +225,7 @@ loadKernel( buffer : ArrayBuffer | Uint8Array, key : String = null ) : void
 
 Load the provided buffer into Spice as a kernel. The provided key can be used to unload the kernel using [unloadKernel](#unloadKernel). Throws an error if the key has already been used. Details of kernel management can be found in the [Kernel Management](https://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/kernel.html#Section%205%20--%20Kernel%20Management) section of the SPICE docs.
 
-#### unloadKernel
+#### .unloadKernel
 
 ```js
 unloadKernel( key : String ) : void
@@ -219,7 +233,7 @@ unloadKernel( key : String ) : void
 
 Unload the kernel that was loaded with the given key. Throws an error if a kernel has not been loaded with the given key.
 
-#### chronos
+#### .chronos
 
 ```js
 chronos( inptim : String, cmdlin : String ) : String
@@ -334,16 +348,34 @@ spiceInstance.loadKernel(buffer);
 
 ## Recompiling cspice.js
 
-`cspice.js` is the massive Javascript file resulting from the automatic porting via Emscripten. As such, if CSPICE updates, this file will need to be recompiled. The current version of cspice.js was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with version emscripten version 2.0.17.
+The files in `src/cspice/` are the massive Javascript files resulting from the automatic porting via Emscripten. As such, if CSPICE updates, these files will need to be recompiled. In order to recompile any of the JS CSPICE files, follow these steps:
 
-In order to recompile cspice.js, follow these steps:
+### Setting Up Emscripten
 
 1. Download relevant toolkit from [the NAIF website](https://naif.jpl.nasa.gov/naif/toolkit_C.html).
 1. Download [emsdk](https://github.com/emscripten-core/emsdk) to download and manage "emscripten" versions.
 1. Install the latest version of emscripten and source the emsdk environment variables from `emsdk_env.sh`.
-1. Unzip the CSpice source folder and put the contents into the `generation/cspice` folder.
+
+### CSPICE Full (asm_full.js)
+
+The current version was created from the [Mac/OSX 64 Bit Toolkit](https://naif.jpl.nasa.gov/naif/toolkit_C_MacIntel_OSX_AppleC_64bit.html) on April 12, 2021 with emscripten version 2.0.17.
+
+1. Unzip the CSPICE source folder and put the contents into the `generation/cspice-full` folder.
+1. Ensure the `LITE_BUILD` variable is set to `False` in `generation/generate-cspice.sh`.
 1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
-1. Move the newly generated `cspice.js` file into the `src/` folder.
+1. Move the newly generated `asm_full.js` file into the `src/cspice` folder.
+
+### CSPICE Lite (asm_lite.js)
+
+_INTERNAL ONLY_
+
+The modified lite version of the CSPICE used was dervied from the latest version of CSPICE on April 27, 2021 with emscripten version 2.0.17. The CSPICE lite code only provides modified `src/cspice` functions so necessary chronos functionality is copied from the latest public version.
+
+1. Unzip the latest CSPICE source folder (see above) and put the contents into the `generation/cspice-full` folder.
+1. Unzip the CSPICE lite source folder and put the contents into the `generation/cspice-lite` folder. Modified CSPICE lite source available [here](https://github.jpl.nasa.gov/gkjohnso/cspice-lite) (internal only).
+1. Ensure the `LITE_BUILD` variable is set to `True` in `generation/generate-cspice.sh`.
+1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
+1. Move the newly generated `asm_lite.js` file into the `src/cspice` folder.
 
 ## License
 

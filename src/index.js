@@ -1,11 +1,9 @@
-import { Spice } from './Spice.js';
-import {
+export { Spice } from './Spice.js';
+export {
     parseMetakernel,
     isMetakernel,
 } from './utils.js';
-
 export {
-    Spice,
-    parseMetakernel,
-    isMetakernel,
-};
+    ASM_SPICE_FULL,
+    ASM_SPICE_LITE,
+} from './constants.js';

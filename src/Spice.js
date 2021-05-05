@@ -1,4 +1,4 @@
-import createModule from './cspice.js';
+import { ASM_SPICE_FULL, ASM_SPICE_LITE } from './constants.js';
 
 const INT_SIZE = 4;
 const INT_TYPE = 'i32';
@@ -21,7 +21,33 @@ export class Spice {
     }
 
     // initialize the module
-    init() {
+    init(type = ASM_SPICE_LITE) {
+        if (this.module !== null) {
+            throw new Error('Spice: Class already initialized with an existing Module.');
+        }
+
+        let promise;
+        switch(type) {
+            case ASM_SPICE_LITE:
+                promise = import('./cspice/asm_lite.js');
+                break;
+            case ASM_SPICE_FULL:
+                promise = import('./cspice/asm_full.js');
+                break;
+            default:
+                throw new Error(`Spice: Unsupported SPICE module type enumeration ${type}`);
+        }
+
+        return promise.then(m => {
+            return this.initFromFactory(m.default);
+        });
+    }
+
+    initFromFactory(createModule) {
+        if (this.module !== null) {
+            throw new Error('Spice: Class already initialized with an existing Module.');
+        }
+
         return createModule({
             print: (...args) => this.onStdOut(...args),
             printErr: (...args) => this.onStdErr(...args),

@@ -1,11 +1,29 @@
 const fs = require('fs');
 const path = require('path');
-const { Spice } = require('../cjs/index.js');
+const { Spice, ASM_SPICE_FULL, ASM_SPICE_LITE } = require('../cjs/index.js');
 
-describe('Spice', () => {
+describe('Spice Lite', () => {
+    runTests(ASM_SPICE_LITE);
+});
+
+describe('Spice Full', () => {
+    runTests(ASM_SPICE_FULL);
+});
+
+describe('Spice Variants', () => {
+    it('should load the appropriate spice version in init.', async () => {
+        const spiceFull = await new Spice().init(ASM_SPICE_FULL);
+        const spiceLite = await new Spice().init(ASM_SPICE_LITE);
+
+        expect(spiceFull.module.HEAP8.length).toBeGreaterThan(50 * 1024 * 1024);
+        expect(spiceLite.module.HEAP8.length).toBeLessThan(50 * 1024 * 1024);
+    });
+});
+
+function runTests(type) {
     let spiceInstance = null;
     beforeAll(async () => {
-        spiceInstance = await new Spice().init();
+        spiceInstance = await new Spice().init(type);
     });
 
     describe('async init', () => {
@@ -22,7 +40,7 @@ describe('Spice', () => {
 
         it('should throw an error if init has not resolved.', () => {
             const inst = new Spice();
-            inst.init();
+            inst.init(type);
 
             let caught = false;
             try {
@@ -41,13 +59,13 @@ describe('Spice', () => {
                 resolved = true;
             });
 
-            await inst.init();
+            await inst.init(type);
             expect(resolved).toBeTruthy();
         });
 
         it('should resolve with the class instance.', async () => {
             const inst = new Spice();
-            const results = await Promise.all([inst.whenReady, inst.init()]);
+            const results = await Promise.all([inst.whenReady, inst.init(type)]);
 
             expect(results[0]).toBe(inst);
             expect(results[1]).toBe(inst);
@@ -172,4 +190,5 @@ describe('Spice', () => {
             });
         });
     });
-});
+}
+
