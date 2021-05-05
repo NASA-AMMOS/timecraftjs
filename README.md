@@ -13,7 +13,7 @@
 
 <!--[![lgtm code quality](https://img.shields.io/lgtm/grade/javascript/g/NASA-AMMOS/timecraftjs.svg?style=flat-square&label=code-quality)](https://lgtm.com/projects/g/NASA-AMMOS/timecraftjs/)-->
 
-TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). It exposes functions to execute operations to convert [SCET](https://en.wikipedia.org/wiki/Spacecraft_Event_Time), ET, SCT, furnish Kernels, among others, on the client side. This avoid unnecessary trips to the backend and allows for important time operations to happen if network connectivity is not immediately available.
+TimeCraftJS is a time conversion library that uses [NAIF's CSPICE](https://naif.jpl.nasa.gov/naif/). It exposes functions to execute operations to convert [SCET](https://en.wikipedia.org/wiki/Spacecraft_Event_Time), ET, SCT, furnish Kernels, among others, on the client side. This avoid unnecessary trips to the backend and allows for important time operations to happen if network connectivity is not immediately available. Multiple variants of the built CSPICE library are provided, including a limited, low-memory "lite" version with lesser functionality. See [Constants](#Constants) section for more information.
 
 Some basic kernels are provided in this repo for performing time conversions. More kernels for other missions can be found [here](https://naif.jpl.nasa.gov/pub/naif/pds/data/).
 
