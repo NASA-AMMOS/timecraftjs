@@ -17,11 +17,6 @@ else
     BUILD_DIR="./cspice-full"
 fi
 
-# CSPICE Full options
-TOTAL_MEMORY="106168320"
-EXPORTED_FUNCTIONS="@$HERE/exports.json"
-FILE_NAME="asm_full.mjs"
-
 # debug options
 # -s ASSERTIONS=1
 # -s SAFE_HEAP=1
