@@ -1,7 +1,7 @@
 #!/bin/bash
 HERE=`pwd`
 
-LITE_BUILD=True
+LITE_BUILD=False
 if $LITE_BUILD
 then
     TOTAL_MEMORY="21364736"
@@ -62,4 +62,7 @@ echo "
 /* eslint-disable */
 
 $(cat $FILE_NAME)
+
+// appended
+export default Module;
 " > $FILE_NAME

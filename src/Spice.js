@@ -30,12 +30,16 @@ export class Spice {
         switch(type) {
             case ASM_SPICE_LITE:
                 promise = import('./cspice/asm_lite.js');
+                break;
             case ASM_SPICE_FULL:
                 promise = import('./cspice/asm_full.js');
+                break;
+            default:
+                throw new Error(`Spice: Unsupported SPICE module type enumeration ${type}`);
         }
 
-        return promise.then(({ defualt: createModule }) => {
-            return this.initFromFactory(createModule);
+        return promise.then(m => {
+            return this.initFromFactory(m.default);
         });
     }
 

@@ -229,3 +229,6 @@ else if (typeof define === 'function' && define['amd'])
 else if (typeof exports === 'object')
   exports["Module"] = Module;
 
+// appended
+export default Module;
+
