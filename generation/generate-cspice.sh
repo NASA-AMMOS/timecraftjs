@@ -54,7 +54,6 @@ CSUPPORT_TARGET=$BUILD_DIR/src/cspice
 cp $CSUPPORT_SOURCE/parcml.c $CSUPPORT_TARGET/parcml.c
 
 # Turn cspice into a javascript file
-cd $HERE
 emcc $EMCC_OPTIONS $BUILD_DIR/src/cspice/*.c -o $FILE_NAME
 
 # Add the funal required line to the new cspice.js

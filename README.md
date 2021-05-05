@@ -151,11 +151,11 @@ Constants for use in the [Spice.init](#init) function to intialize the library t
 
 #### ASM_SPICE_FULL
 
-This constant indicates to load and use the full SPICE library with full functionality. Run time memory requirement is around 100 MB.
+Use this constant to load and use the full asm.js version of the SPICE library with full functionality. Run time memory requirement is around 100 MB.
 
 #### ASM_SPICE_LITE
 
-This indicates to load and use an unofficial "lite" version of the SPICE library with some mission funcitonality to improve memory requirements. Specifically all `ek*` functions have been removed and various internal constants have been lowered to reduce memory use. Not all NAIF kernels can be guaranteed to function when using this reduced memory of the package. If an error occurs due to overrunning memory use the "full" version, instead. Run time memory requirement is around 20 MB.
+Use this constant to load and use an asm.js version of an unofficial "lite" version of the SPICE library with some missing functonality to improve memory requirements. Specifically all `ek*` functions have been removed and various internal constants have been lowered to reduce memory use. Not all NAIF kernels can be guaranteed to function when using this reduced memory of the package. If an error occurs due to overrunning memory use the "full" version, instead. Run time memory requirement is around 20 MB.
 
 ### Spice
 
@@ -372,7 +372,7 @@ _INTERNAL ONLY_
 The modified lite version of the CSPICE used was dervied from the latest version of CSPICE on April 27, 2021 with emscripten version 2.0.17. The CSPICE lite code only provides modified `src/cspice` functions so necessary chronos functionality is copied from the latest public version.
 
 1. Unzip the latest CSPICE source folder (see above) and put the contents into the `generation/cspice-full` folder.
-1. Unzip the CSPICE lite source folder and put the contents into the `generation/cspice-lite` folder.
+1. Unzip the CSPICE lite source folder and put the contents into the `generation/cspice-lite` folder. Modified CSPICE lite source available [here](https://github.jpl.nasa.gov/gkjohnso/cspice-lite) (internal only).
 1. Ensure the `LITE_BUILD` variable is set to `True` in `generation/generate-cspice.sh`.
 1. Run `generation/generate-cspice.sh` to generate the js library file in the folder.
 1. Move the newly generated `asm_lite.js` file into the `src/cspice` folder.
