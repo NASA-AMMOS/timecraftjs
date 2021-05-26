@@ -1,4 +1,4 @@
-import { ASM_SPICE_FULL, ASM_SPICE_LITE } from './constants.js';
+import createModule from './cspice.js';
 
 const INT_SIZE = 4;
 const INT_TYPE = 'i32';
@@ -21,33 +21,7 @@ export class Spice {
     }
 
     // initialize the module
-    init(type = ASM_SPICE_LITE) {
-        if (this.module !== null) {
-            throw new Error('Spice: Class already initialized with an existing Module.');
-        }
-
-        let promise;
-        switch(type) {
-            case ASM_SPICE_LITE:
-                promise = import('./cspice/asm_lite.js');
-                break;
-            case ASM_SPICE_FULL:
-                promise = import('./cspice/asm_full.js');
-                break;
-            default:
-                throw new Error(`Spice: Unsupported SPICE module type enumeration ${type}`);
-        }
-
-        return promise.then(m => {
-            return this.initFromFactory(m.default);
-        });
-    }
-
-    initFromFactory(createModule) {
-        if (this.module !== null) {
-            throw new Error('Spice: Class already initialized with an existing Module.');
-        }
-
+    init() {
         return createModule({
             print: (...args) => this.onStdOut(...args),
             printErr: (...args) => this.onStdErr(...args),
@@ -1274,6 +1248,95 @@ export class Spice {
         Module._free( lt_ptr );
 
         return { ptarg, lt };
+    }
+
+    spkezr(targ, et, ref, abcorr, obs) {
+        const Module = this.module;
+        // create output pointers
+        const starg_ptr = Module._malloc(DOUBLE_SIZE * 6);
+        const lt_ptr = Module._malloc(DOUBLE_SIZE);
+
+        Module.ccall(
+            'spkezr_c',
+            null,
+            /* ConstSpiceChar targ, SpiceDouble et, ConstSpiceChar ref, ConstSpiceChar abcorr, ConstSpiceChar obs, SpiceDouble ptarg, SpiceDouble lt */
+            [ 'string', 'number', 'string', 'string', 'string', 'number', 'number' ],
+            [ targ, et, ref, abcorr, obs, starg_ptr, lt_ptr ],
+        );
+
+        // read and free output pointers
+        const starg = [
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 0, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 1, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 2, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 3, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 4, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 5, 'double' ),
+        ];
+        Module._free( starg_ptr );
+
+        const lt = Module.getValue( lt_ptr, 'double' );
+        Module._free( lt_ptr );
+
+        return { starg, lt };
+    }
+
+    pxform(from, to, et) {
+        const Module = this.module;
+        // create output pointers
+
+        const rot_ptr = Module._malloc(DOUBLE_SIZE * 9);
+
+        Module.ccall(
+            'pxform_c',
+            null,
+            /* ConstSpiceChar from, ConstSpiceChar to, SpiceDouble et, SpiceDouble rot */
+            [ 'string', 'string', 'number', 'number'],
+            [ from, to, et, rot_ptr ],
+        );
+
+        // read and free output pointers
+        const rot = [
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 0, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 1, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 2, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 3, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 4, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 5, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 6, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 7, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 8, 'double' ),
+        ];
+        Module._free( rot_ptr );
+
+
+        return rot ;
+    }
+
+    m2q(R) {
+        const Module = this.module;
+        // create output pointers
+        const quat_ptr = Module._malloc(DOUBLE_SIZE * 4);
+
+        Module.ccall(
+            'm2q_c',
+            null,
+            /* ConstSpiceChar from, ConstSpiceChar to, SpiceDouble et, SpiceDouble rot */
+            [ 'number', 'number'],
+            [ R, quat_ptr ],
+        );
+
+        // read and free output pointers
+        const quat = [
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 0, 'double' ),
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 1, 'double' ),
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 2, 'double' ),
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 3, 'double' ),
+        ];
+        Module._free( quat_ptr );
+
+
+        return { quat };
     }
 
 }
