@@ -1342,6 +1342,10 @@ export class Spice {
     m2q(R) {
         const Module = this.module;
         // create output pointers
+        const r_ptr = Module._malloc(DOUBLE_SIZE * 9);
+        for (let i = 0; i < 9; i++) {
+            Module.setValue(r_ptr + DOUBLE_SIZE * i, R[i], DOUBLE_TYPE);
+        }
         const quat_ptr = Module._malloc(DOUBLE_SIZE * 4);
 
         Module.ccall(
@@ -1349,7 +1353,7 @@ export class Spice {
             null,
             /* ConstSpiceChar from, ConstSpiceChar to, SpiceDouble et, SpiceDouble rot */
             [ 'number', 'number'],
-            [ R, quat_ptr ],
+            [ r_ptr, quat_ptr ],
         );
 
         // read and free output pointers
@@ -1362,7 +1366,7 @@ export class Spice {
         Module._free( quat_ptr );
 
 
-        return { quat };
+        return  quat ;
     }
 
 }
