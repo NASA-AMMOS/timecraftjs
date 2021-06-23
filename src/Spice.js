@@ -1276,4 +1276,97 @@ export class Spice {
         return { ptarg, lt };
     }
 
+    spkezr(targ, et, ref, abcorr, obs) {
+        const Module = this.module;
+        // create output pointers
+        const starg_ptr = Module._malloc(DOUBLE_SIZE * 6);
+        const lt_ptr = Module._malloc(DOUBLE_SIZE);
+
+        Module.ccall(
+            'spkezr_c',
+            null,
+            /* ConstSpiceChar targ, SpiceDouble et, ConstSpiceChar ref, ConstSpiceChar abcorr, ConstSpiceChar obs, SpiceDouble ptarg, SpiceDouble lt */
+            [ 'string', 'number', 'string', 'string', 'string', 'number', 'number' ],
+            [ targ, et, ref, abcorr, obs, starg_ptr, lt_ptr ],
+        );
+
+        // read and free output pointers
+        const starg = [
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 0, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 1, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 2, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 3, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 4, 'double' ),
+            Module.getValue( starg_ptr + DOUBLE_SIZE * 5, 'double' ),
+        ];
+        Module._free( starg_ptr );
+
+        const lt = Module.getValue( lt_ptr, 'double' );
+        Module._free( lt_ptr );
+
+        return { starg, lt };
+    }
+
+    pxform(from, to, et) {
+        const Module = this.module;
+        // create output pointers
+
+        const rot_ptr = Module._malloc(DOUBLE_SIZE * 9);
+
+        Module.ccall(
+            'pxform_c',
+            null,
+            /* ConstSpiceChar from, ConstSpiceChar to, SpiceDouble et, SpiceDouble rot */
+            [ 'string', 'string', 'number', 'number'],
+            [ from, to, et, rot_ptr ],
+        );
+
+        // read and free output pointers
+        const rot = [
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 0, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 1, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 2, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 3, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 4, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 5, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 6, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 7, 'double' ),
+            Module.getValue( rot_ptr + DOUBLE_SIZE * 8, 'double' ),
+        ];
+        Module._free( rot_ptr );
+
+
+        return rot ;
+    }
+
+    m2q(R) {
+        const Module = this.module;
+        // create output pointers
+        const r_ptr = Module._malloc(DOUBLE_SIZE * 9);
+        for (let i = 0; i < 9; i++) {
+            Module.setValue(r_ptr + DOUBLE_SIZE * i, R[i], DOUBLE_TYPE);
+        }
+        const quat_ptr = Module._malloc(DOUBLE_SIZE * 4);
+
+        Module.ccall(
+            'm2q_c',
+            null,
+            /* ConstSpiceChar from, ConstSpiceChar to, SpiceDouble et, SpiceDouble rot */
+            [ 'number', 'number'],
+            [ r_ptr, quat_ptr ],
+        );
+
+        // read and free output pointers
+        const quat = [
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 0, 'double' ),
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 1, 'double' ),
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 2, 'double' ),
+            Module.getValue( quat_ptr + DOUBLE_SIZE * 3, 'double' ),
+        ];
+        Module._free( quat_ptr );
+
+
+        return  quat ;
+    }
+
 }
